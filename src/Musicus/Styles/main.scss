@@ -1,0 +1,468 @@
+@import "fonts";
+@import "colors";
+
+* {
+  position: relative;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html {
+  font-family: 'Open Sans', sans-serif;
+  position: fixed;
+  
+  box-sizing: border-box;
+}
+
+html,body{
+  font-family: 'open sans';
+  margin: 0;
+  padding: 0;
+  
+  height: 100%;
+  width: 100%;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+  flex-flow:column nowrap;
+  height:100vh; /* fix IE11 */
+  min-height:100%; /* fix IE11 */ 
+}
+
+body{
+  color: $lightcolor; 
+  //Temp CSS for Windows tablet (disables double tap zoom)
+   -ms-touch-action: manipulation !important;
+
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#201d36+0,242049+16,242049+16,493342+83,79551b+100 */
+    background: #201d36; /* Old browsers */
+    background: -moz-linear-gradient(top, #201d36 0%, #242049 16%, #242049 16%, #493342 83%, #79551b 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #201d36 0%,#242049 16%,#242049 16%,#493342 83%,#79551b 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #201d36 0%,#242049 16%,#242049 16%,#493342 83%,#79551b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#201d36', endColorstr='#79551b',GradientType=0 ); /* IE6-9 */   
+}
+
+@-moz-document url-prefix() { 
+  body {
+    background: #201d36 !important;
+  }
+}
+
+#root{
+  width: 100%;
+  height: 100%;
+  // overflow: hidden;  
+}
+
+#app{
+  width: 100%;
+  height: 100%;
+  // overflow: hidden;
+}
+
+.page-header {
+  height:15%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  font-size:40px;
+
+  .page-header-album-art{
+    display: flex;
+    height:100%;
+    width: 10%;
+  }
+
+  .page-header-controls{
+    display: flex;
+    flex:90;
+    height:100%;
+
+    .controls-song {
+      display:flex;
+      border-right: 10px solid #021531;
+      width:30%;
+      height: 100%;
+      flex:30;
+      flex-direction: column;
+      padding:10px;
+
+      .controls-song-artist{
+        width:100%;
+        height: 50%;
+        display:flex;
+        font-size:14px;
+        font-style: italic;
+        justify-content: center;
+
+      }
+      .controls-song-track{
+        width:100%;
+        height: 50%;
+        font-size: 25px;
+        justify-content: center;     
+        text-overflow: ellipsis;
+        white-space: nowrap;   
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        
+      }
+    }
+
+    .controls-controls  {
+      display:flex;
+      width:100%;      
+      flex: 70;
+      flex-direction: column;
+    }
+
+    .controls-buttons {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex: 80;
+      justify-content: center;
+      align-items:center;
+
+      .button {
+        border: 3px solid #737495;
+        color: #FFF;
+        justify-content: center;
+        display: flex;
+        align-items:center;
+        border-radius: 50%;
+        width: 55px;
+        height: 55px; 
+        text-align:center;
+        margin-left:10px;
+        margin-right:10px;   
+        font-size: 25px;
+      }
+
+      .button::after {
+          position: absolute;
+          content: " ";
+      }
+    }
+
+    .controls-progressbar {
+      display:flex;
+      width:100%;
+      height: 100%;
+      flex: 20;
+      align-items: center;
+      justify-content: center;
+
+      .progressbar-tracktime {
+        display: flex;
+        flex: 10;
+        width: 100%;
+        height: 100%;
+        font-size: 14px;
+      justify-content: center;
+      }
+
+      .progressbar-container {
+        display: flex;
+        flex: 80;
+        width: 100%;
+        height: 20%;
+        background-color: #737495;
+
+        .progressbar-value {
+          height: 100%;
+          background-color: white;
+        }
+      }
+    }
+  }
+}
+
+
+.body-header-wrapper {
+  display:flex;
+  width: 100%;
+  height:6%;
+
+  .body-header-left {
+    flex:60;
+    width: 100%;
+    height:100%;
+  }
+
+  .body-header-right {
+    flex:40;
+    width: 100%;
+    height:100%;
+  }
+}
+
+.body-wrapper{
+  height: 85%;
+  width: 100%;
+  display:flex;
+
+  .search-panel {
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    flex:60;
+    // overflow:hidden;
+    border-right: 2px solid #021531;
+
+    .search-bar {
+      display:flex;
+      width:100%;
+      height:100%;
+      flex:7;
+      background-color:#021531;
+      flex-direction: row;
+
+      .search-bar-input {
+        display:flex;
+        flex: 90;
+        height:100%;
+        width:100%;
+        background-color:blue;
+
+        #tbSearch {
+          width: 100%;
+          background-color: #737495;
+          padding: 15px;
+          outline: none;
+          border: 0;
+          color: #FFF;
+          border: 5px solid #021531;
+        }
+
+        ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+          color:    #FFF;
+        }
+      }
+
+      .search-bar-btn{
+        flex:10;
+        height: 100%;
+        width:100px;
+        border: 5px solid #021531;
+        background-color: #737495;        
+        justify-content: center;
+        align-items: center;
+        display:flex;
+      }
+
+    }
+
+    .search-album-result {
+      flex:15;
+      width:100%;
+      height:100%;
+      background-color:purple;
+      display:flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+
+      .album-item {
+        height: 100%;
+        width: 100px;
+        background-color:green;
+        display:inline-block;
+        flex: 0 0 auto;
+        margin: 0 10px;
+      }
+    }
+
+    .search-result-list{
+      flex: 93;
+      /* Change this flex value if you're adding items to the search panel*/
+      /* currentFlex - flexOf_search-bar - flexOf_new-element*/
+      width: 100%;
+      height:100%;
+      overflow-y: auto;
+
+      .search-list-item{
+        width: 100%;
+        height: 8%;
+        align-items:center;
+        display:flex;
+        flex-direction:row;
+
+        .search-list-item-title{
+          width: 100%;
+          height: 100%;
+          flex: 85;
+          display:flex;
+          align-items:center;
+          padding-left: 15px;
+        }
+
+        .search-list-item-duration{
+          width: 100%;
+          height: 100%;
+          flex: 7;
+          display:flex;
+          justify-content: left;
+          align-items:center;
+          color: #737495;
+        }
+
+        .search-list-item-tracks {
+          width: 100%;
+          height: 100%;
+          flex: 10;
+          display:flex;
+          justify-content: left;
+          align-items:center;
+          color: #737495;
+        }
+
+        .search-list-item-add {
+          width:100%;
+          height:100%;
+          flex: 8;
+          display:flex;
+          justify-content: center;
+          align-items:center;
+          font-size:20px;
+
+        }
+      }
+
+    }
+  }
+    
+
+
+  .body-queue-panel {
+    width:100%;
+    height:100%;
+    flex:40;
+    display:flex;
+    flex-direction: column;
+
+    .body-queue-panel-header{
+      width:100%;
+      height:100%;
+      flex:7;
+      background-color: #021531;
+      // border: 5px solid #021531;
+      
+      opacity: 50%;
+      display:flex;
+      align-items: center;
+      padding-left: 20px;
+    }
+
+    .body-queue-panel-content {
+      width:100%;
+      height:100%;
+      flex:93;
+      overflow-y:auto;
+      // border-left: 1px solid #021531;
+    }
+  }
+}
+
+.responsive-image {
+  max-width: 100%;
+  max-height: 100%;
+  margin:0;
+  padding:0;
+  flex-shrink: 0;
+}
+
+.queue-list-item {
+  width: 100%;
+  height: 6%;
+  align-items:center;
+  display: flex;
+  padding-left: 15px;
+  color: #737495;
+  flex-direction: row;
+
+  .queue-list-item-title {
+    flex: 90;
+    overflow: hidden;
+  }
+
+  .active {
+   font-weight: bold;
+   color: #fff;
+  }
+
+  .queue-list-item-duration {
+    flex: 10;
+    padding-left: 5px;
+  }
+}
+
+
+::-webkit-scrollbar-track
+{
+   background-color: #021531;
+}
+
+::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #737495;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background-color: #737495;
+}
+
+.controls-volume{
+  position:absolute;
+  right: 2.5%;
+  top: 10%;
+}
+
+input[type='range'] {
+  width: 250px;
+  height: 25px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: transparent;
+}
+input[type='range'],
+input[type='range']::-webkit-slider-runnable-track,
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  width: 180px;
+  height: 3px;
+  background: #AAA;
+}
+input[type='range']::-webkit-slider-thumb {
+  position: relative;
+  height: 20px;
+  width: 20px;
+  margin-top: -8px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+input[type='range']::-webkit-slider-thumb::before {
+  position: absolute;
+  content: '';
+  height: 10px; /* equal to height of runnable track */
+  width: 500px; /* make this bigger than the widest range input element */
+  left: -502px; /* this should be -2px - width */
+  top: 8px; /* don't change this */
+  background: #777;
+}
+input[type='range']:focus {
+  outline-width: 0;
+}
