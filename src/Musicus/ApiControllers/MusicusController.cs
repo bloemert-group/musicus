@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Musicus.Helpers;
 using Musicus.Models;
 
@@ -19,6 +15,11 @@ namespace Musicus.ApiControllers
 			_signalRHelper = signalRHelper;
 		}
 
+		[HttpPost]
+		[Route("play")]
+		public IActionResult Play() => Json(new { Succeed = PlayerHelper.PlayNextTrack() });
+
+		[HttpPost]
 		[Route("play/{spotifyUrl}")]
 		public IActionResult Play(string spotifyUrl)
 		{
@@ -31,13 +32,9 @@ namespace Musicus.ApiControllers
 			return Json(SpotifyHelper.GetStatus());
 		}
 
+		[HttpPost]
 		[Route("next")]
-		public IActionResult Next()
-		{
-			SpotifyHelper.Next();
-
-			return Json(new { Succeed = true });
-		}		
+		public IActionResult Next() => Json(new { Succeed = PlayerHelper.PlayNextTrack() });
 
 		[Route("setvolume/{volume}")]
 		public IActionResult SetVolume(float volume)
@@ -59,6 +56,30 @@ namespace Musicus.ApiControllers
 			}
 
 			return Json(SpotifyHelper.Search(filter.Keyword));
+		}
+
+		[HttpPost]
+		[Route("addtoqueue")]
+		public IActionResult AddToQueue([FromBody] PlaylistItem item)
+		{
+			if (string.IsNullOrEmpty(item.TrackId))
+			{
+				return Json(new { Succeed = false });
+			}
+
+			Playlist.AddItemToList(item);
+
+			return GetPlaylist();
+		}
+
+		[HttpGet]
+		public IActionResult GetPlaylist()
+		{
+			var playlist = Playlist.GetPlaylist();
+
+			_signalRHelper.SetPlaylist(playlist);
+
+			return Json(new { Succeed = true, Data = playlist });
 		}
 	}
 }

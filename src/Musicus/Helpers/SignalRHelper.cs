@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Models;
-using System.Threading;
 using Musicus.Models.Spotify;
 
 namespace Musicus.Helpers
@@ -17,7 +14,7 @@ namespace Musicus.Helpers
 		{
 			_hubContext = hubContext;
 		}
-		
+
 		public void SetVolume(float volume)
 		{
 			_hubContext.Clients.All.SendAsync("SetVolume", volume);
@@ -33,6 +30,11 @@ namespace Musicus.Helpers
 			_hubContext.Clients.All.SendAsync("SetStatus", new { Artist = artist, Track = track, Current = current, Length = length, albumArtWork = albumArtWork, Play = play });
 		}
 
+		public void SetPlaylist(IList<PlaylistItem> playlist)
+		{
+			_hubContext.Clients.All.SendAsync("SetQueue", playlist);
+		}
+
 		public void StartStatusUpdate()
 		{
 			var t = new Thread(() =>
@@ -40,6 +42,7 @@ namespace Musicus.Helpers
 				while (true)
 				{
 					SetSpotifyStatus(SpotifyHelper.GetStatus());
+					SetPlaylist(Playlist.GetPlaylist());
 
 					Thread.Sleep(1000);
 					//your infinite loop 

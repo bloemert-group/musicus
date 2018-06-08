@@ -5,11 +5,11 @@ import QueueItem from './QueueItem.jsx';
 class Queue extends React.Component {
   render() {
 
-    var queuelist = [];
+		var queuelist = [];
     for (var i = 0; i < this.props.queue.length; i++) {
       queuelist.push({
-        Description: this.props.queue[i].Description,
-        TrackLength: this.props.queue[i].TrackLength,
+        Description: this.props.queue[i].description,
+        TrackLength: this.props.queue[i].tracklength,
         QueueId: i
       });
     }
@@ -36,7 +36,7 @@ Queue.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    queue: state.musicusState.queue
+		queue: state.musicusState.queue
   }
 }
 

@@ -42,6 +42,7 @@ export function search(keyword) {
 			.then(response => response.json())
 			.then(json => {
 				dispatch(setSearchResultAction(json));
+				console.log(json);
 			})
 			.catch(() => {
 				console.log('error');
@@ -49,12 +50,14 @@ export function search(keyword) {
 	}
 }
 
-export function addToQueue(trackid, description, trackLength) {
+export function addToQueue(trackid, description, trackLength, url, source) {
 	return (dispatch) => {
 		const track = {
 			Description: description,
 			TrackId: trackid,
-			TrackLength: trackLength
+			TrackLength: trackLength,
+			Url: url,
+			TrackSource: source
 		};
 
 		fetch(general.API_URL_ADD_TO_QUEUE, {
@@ -66,7 +69,7 @@ export function addToQueue(trackid, description, trackLength) {
 		})
 			.then(response => response.json())
 			.then(json => {
-				console.log(json);
+				dispatch(setQueue(json.data));
 			})
 			.catch(() => {
 				console.log('error');

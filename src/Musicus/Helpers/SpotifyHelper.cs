@@ -1,17 +1,16 @@
-﻿using Musicus.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using Musicus.Models;
 using Musicus.Models.Spotify;
 using Newtonsoft.Json;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Enums;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Musicus.Helpers
 {
@@ -68,33 +67,25 @@ namespace Musicus.Helpers
 
 			return JsonConvert.DeserializeObject<AuthorizationModel>(textResponse);
 		}
-		
+
 		public static bool Play(string spotifyUrl = "")
 		{
 			if (!string.IsNullOrEmpty(spotifyUrl))
 			{
-				SpotifyAPI.PlayURL(spotifyUrl).Wait();
+				Task.Run(() => SpotifyAPI.PlayURL(spotifyUrl));
 			}
 			else
 			{
-				SpotifyAPI.Play().Wait();
+				Task.Run(() => SpotifyAPI.Play());
 			}
 
 			return true;
 		}
-		public static void Pause()
-		{
-			SpotifyAPI.Pause().Wait();
-		}
+		public static void Pause() => Task.Run(() => SpotifyAPI.Pause());
 
-		public static void Previous()
-		{
-			SpotifyAPI.Previous();
-		}
-		public static void Next()
-		{
-			SpotifyAPI.Skip();
-		}
+		public static void Previous() => SpotifyAPI.Previous();
+
+		public static void Next() => SpotifyAPI.Skip();
 
 		public static float GetVolume()
 		{
@@ -113,11 +104,14 @@ namespace Musicus.Helpers
 			if (status != null)
 			{
 				result.IsPlaying = status.Playing;
-				result.Artist = status.Track.ArtistResource.Name;
-				result.Track = status.Track.TrackResource.Name;
-				result.Length = status.Track.Length;
+				result.Artist = status.Track?.ArtistResource?.Name;
+				result.Track = status.Track?.TrackResource?.Name;
+				result.Length = status.Track != null ? status.Track.Length : 0;
 				result.Current = status.PlayingPosition;
-				result.AlbumArtWork = status.Track.GetAlbumArtUrl(AlbumArtSize.Size160);
+				if (status.Track != null && status.Track.AlbumResource != null)
+				{
+					result.AlbumArtWork = status.Track.GetAlbumArtUrl(AlbumArtSize.Size160);
+				}
 			}
 
 			return result;
@@ -135,7 +129,9 @@ namespace Musicus.Helpers
 					Description = t.Name,
 					TrackId = t.Uri,
 					TrackLength = t.DurationMs,
-					Type = SearchResultType.Track
+					Type = SearchResultType.Track,
+					Url = t.Uri,
+					TrackSource = "Spotify"
 				});
 			}
 
@@ -147,7 +143,9 @@ namespace Musicus.Helpers
 					TrackId = p.Id,
 					Description = p.Name,
 					TrackCount = p.Tracks.Total,
-					Type = SearchResultType.Playlist
+					Type = SearchResultType.Playlist,
+					Url = p.Uri,
+					TrackSource = "Spotify"
 				});
 			}
 

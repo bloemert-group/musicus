@@ -31,8 +31,8 @@ class SearchPanel extends React.Component {
         this.props.search(searchKey);
     }
 
-    addToQueue(trackId, description, trackLength) {        
-        this.props.addToQueue(trackId, description, trackLength);
+    addToQueue(trackId, description, trackLength, url, source) {        
+        this.props.addToQueue(trackId, description, trackLength, url, source);
     }
 
     onEnterKeyPress(e) {
@@ -48,8 +48,8 @@ class SearchPanel extends React.Component {
                 {/* <SearchAlbumResult /> */}
                 <div className="search-result-list">
                 {
-                    this.props.searchResult.map(line =>
-                        <SearchResult description={line.description} searchtype={line.type} trackid={line.trackId} tracklength={line.trackLength} trackcount={line.trackCount} onclick={this.addToQueue} />
+								this.props.searchResult.map(line =>
+									<SearchResult description={line.description} searchtype={line.type} trackid={line.trackId} tracklength={line.trackLength} trackcount={line.trackCount} url={line.url} tracksource={line.trackSource} onclick={this.addToQueue} />
                     )
                 }
                 </div>

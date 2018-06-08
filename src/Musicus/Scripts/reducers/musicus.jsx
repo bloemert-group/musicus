@@ -46,6 +46,6 @@ export const musicusReducer = function init(state = initMusicusState, action) {
 				volume: action.volume
 			});
 		default:
-			return state
+			return state;
 	}
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Musicus.Models
+﻿namespace Musicus.Models
 {
 	public enum SearchResultType
 	{
@@ -20,5 +15,7 @@ namespace Musicus.Models
 		public SearchResultType Type { get; set; }
 
 		public int TrackCount { get; set; }
+		public string Url { get; set; }
+		public string TrackSource { get; set; }
 	}
 }

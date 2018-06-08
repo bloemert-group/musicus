@@ -8,12 +8,13 @@ import moment from 'moment'
 class SearchResult extends React.Component {
     constructor(props) {
         super(props);
-        this.click = this.click.bind(this);
+			this.click = this.click.bind(this);
+
     }
 
-    click(e) {
-        e.preventDefault();
-        this.props.onclick(this.props.trackid, this.props.description, this.props.tracklength);
+	click(e) {
+		e.preventDefault();
+        this.props.onclick(this.props.trackid, this.props.description, this.props.tracklength, this.props.url, this.props.tracksource);
     }
 
     render() {
@@ -53,7 +54,9 @@ SearchResult.propTypes = {
     onclick: PropTypes.func,
     tracklength: PropTypes.number,
     searchtype: PropTypes.number,
-    trackcount: PropTypes.number
+	trackcount: PropTypes.number,
+	url: PropTypes.string,
+	tracksource: PropTypes.string
 }
 
 function mapStateToProps(state) {
