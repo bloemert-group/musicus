@@ -108,6 +108,7 @@ namespace Musicus.Helpers
 				result.Track = status.Track?.TrackResource?.Name;
 				result.Length = status.Track != null ? status.Track.Length : 0;
 				result.Current = status.PlayingPosition;
+				result.TrackSource = "Spotify";
 				if (status.Track != null && status.Track.AlbumResource != null)
 				{
 					result.AlbumArtWork = status.Track.GetAlbumArtUrl(AlbumArtSize.Size160);
@@ -126,6 +127,7 @@ namespace Musicus.Helpers
 			{
 				result.Add(new SearchResult
 				{
+					Artist = t.Artists[0].Name,
 					Description = t.Name,
 					TrackId = t.Uri,
 					TrackLength = t.DurationMs,

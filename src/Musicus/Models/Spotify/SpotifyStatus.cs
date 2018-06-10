@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Musicus.Models.Spotify
+﻿namespace Musicus.Models.Spotify
 {
 	public class SpotifyStatus
 	{
@@ -14,5 +9,6 @@ namespace Musicus.Models.Spotify
 		public string AlbumArtWork { get; set; }
 
 		public bool IsPlaying { get; set; }
+		public string TrackSource { get; set; }
 	}
 }

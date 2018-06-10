@@ -17,14 +17,13 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("play")]
-		public IActionResult Play() => Json(new { Succeed = PlayerHelper.PlayNextTrack() });
+		public IActionResult Play([FromBody]Track track)
+			=> Json(new { Succeed = PlayerHelper.Play(track) });
 
 		[HttpPost]
-		[Route("play/{spotifyUrl}")]
-		public IActionResult Play(string spotifyUrl)
-		{
-			return Json(SpotifyHelper.Play(spotifyUrl));
-		}
+		[Route("pause")]
+		public IActionResult Pause([FromBody]Track track)
+			=> Json(new { Succeed = PlayerHelper.PauseTrack(track) });
 
 		[Route("status")]
 		public IActionResult Status()
@@ -60,7 +59,7 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("addtoqueue")]
-		public IActionResult AddToQueue([FromBody] PlaylistItem item)
+		public IActionResult AddToQueue([FromBody] Track item)
 		{
 			if (string.IsNullOrEmpty(item.TrackId))
 			{

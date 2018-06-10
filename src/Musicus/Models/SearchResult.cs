@@ -8,6 +8,7 @@
 	public class SearchResult
 	{
 		public string TrackId { get; set; }
+		public string Artist { get; set; }
 		public string Description { get; set; }
 
 		public int TrackLength { get; set; }

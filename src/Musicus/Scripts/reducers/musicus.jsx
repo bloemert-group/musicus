@@ -10,7 +10,9 @@ const initMusicusState = {
     track: '',
     currentPosition: 0,
     length: 0,
-    albumArtwork: ''
+		albumArtwork: '',
+		trackSource: '',
+		url: ''
   },
   queue: [],
   isplaying: false,

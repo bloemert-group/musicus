@@ -42,7 +42,6 @@ export function search(keyword) {
 			.then(response => response.json())
 			.then(json => {
 				dispatch(setSearchResultAction(json));
-				console.log(json);
 			})
 			.catch(() => {
 				console.log('error');
@@ -50,9 +49,10 @@ export function search(keyword) {
 	}
 }
 
-export function addToQueue(trackid, description, trackLength, url, source) {
+export function addToQueue(trackid, artist, description, trackLength, url, source) {
 	return (dispatch) => {
 		const track = {
+			Artist: artist,
 			Description: description,
 			TrackId: trackid,
 			TrackLength: trackLength,
@@ -77,25 +77,46 @@ export function addToQueue(trackid, description, trackLength, url, source) {
 	}
 }
 
-export function play() {
+export function play(currentTrack) {
 	return (dispatch) => {
+		const track = {
+			Artist: currentTrack.artist,
+			Description: currentTrack.track,
+			TrackSource: currentTrack.trackSource
+		};
+
 		fetch(general.API_URL_PLAY, {
-			method: 'POST'
+			method: 'POST',
+			headers: {
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify(track)
 		})
 			.then(response => response.json())
 			.then(json => {
 				console.log(json);
 			})
-			.catch(() => {
+			.catch((e) => {
+				console.log(e);
 				console.log('error');
 			});
 	}
 }
 
-export function pause() {
+export function pause(currentTrack) {
 	return (dispatch) => {
+		const track = {
+			Artist: currentTrack.artist,
+			Description: currentTrack.track,
+			TrackSource: currentTrack.trackSource
+		};
+
 		fetch(general.API_URL_PAUSE, {
-			method: 'POST'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(track)
 		})
 			.then(response => response.json())
 			.then(json => {
@@ -129,6 +150,12 @@ export function setTrack(trackInfo) {
 	}
 }
 
+export function setQueue(queue) {
+	return dispatch => {
+		dispatch(setQueueInfo(queue));
+	}
+}
+
 function setTrackInfo(trackInfo) {
 	return {
 		type: actionTypes.SET_CURRENTTRACK,
@@ -137,7 +164,8 @@ function setTrackInfo(trackInfo) {
 			track: trackInfo.track,
 			currentPosition: trackInfo.current,
 			length: trackInfo.length,
-			albumArtwork: trackInfo.albumArtWork
+			albumArtwork: trackInfo.albumArtWork,
+			trackSource: trackInfo.trackSource
 		}
 	};
 }
@@ -149,7 +177,7 @@ function setPlaying(isplaying) {
 	}
 }
 
-export function setQueue(queue) {
+function setQueueInfo(queue) {
 	return {
 		type: actionTypes.SET_QUEUE,
 		queue

@@ -10,11 +10,11 @@ class Player extends React.Component {
     this.clickNext = this.clickNext.bind(this);
   }
 
-  clickPlay() {
+	clickPlay() {
     if (this.props.isplaying) {
-      this.props.pause();
+			this.props.pause(this.props.currentTrack);
     } else {
-      this.props.play();
+      this.props.play(this.props.currentTrack);
     }
   }
 
@@ -53,7 +53,8 @@ Player.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isplaying: state.musicusState.isplaying
+		isplaying: state.musicusState.isplaying,
+		currentTrack: state.musicusState.currentTrack
   }
 }
 

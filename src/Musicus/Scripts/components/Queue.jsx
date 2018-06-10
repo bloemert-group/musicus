@@ -4,12 +4,11 @@ import QueueItem from './QueueItem.jsx';
 
 class Queue extends React.Component {
   render() {
-
 		var queuelist = [];
     for (var i = 0; i < this.props.queue.length; i++) {
       queuelist.push({
-        Description: this.props.queue[i].description,
-        TrackLength: this.props.queue[i].tracklength,
+        Description: this.props.queue[i].artist + ' - ' + this.props.queue[i].description,
+        TrackLength: this.props.queue[i].trackLength,
         QueueId: i
       });
     }

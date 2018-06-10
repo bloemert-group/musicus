@@ -22,15 +22,15 @@ namespace Musicus.Helpers
 
 		public void SetSpotifyStatus(SpotifyStatus spotifyStatus)
 		{
-			SetStatus(spotifyStatus.Artist, spotifyStatus.Track, spotifyStatus.Current, spotifyStatus.Length, spotifyStatus.AlbumArtWork, spotifyStatus.IsPlaying);
+			SetStatus(spotifyStatus.Artist, spotifyStatus.Track, spotifyStatus.Current, spotifyStatus.Length, spotifyStatus.AlbumArtWork, spotifyStatus.IsPlaying, spotifyStatus.TrackSource);
 		}
 
-		public void SetStatus(string artist, string track, double current, double length, string albumArtWork, bool play)
+		public void SetStatus(string artist, string track, double current, double length, string albumArtWork, bool play, string trackSource)
 		{
-			_hubContext.Clients.All.SendAsync("SetStatus", new { Artist = artist, Track = track, Current = current, Length = length, albumArtWork = albumArtWork, Play = play });
+			_hubContext.Clients.All.SendAsync("SetStatus", new { Artist = artist, Track = track, Current = current, Length = length, albumArtWork = albumArtWork, Play = play, TrackSource = trackSource });
 		}
 
-		public void SetPlaylist(IList<PlaylistItem> playlist)
+		public void SetPlaylist(IList<Track> playlist)
 		{
 			_hubContext.Clients.All.SendAsync("SetQueue", playlist);
 		}

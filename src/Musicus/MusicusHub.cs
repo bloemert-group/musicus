@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using Musicus.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Musicus.Models;
 
 namespace Musicus
 {
@@ -20,6 +18,7 @@ namespace Musicus
 			//helper.SetQueue(QueueItemFactory.Instance.ListQueue().ToList());
 			_helper.SetVolume(SpotifyHelper.GetVolume());
 			_helper.SetSpotifyStatus(SpotifyHelper.GetStatus());
+			_helper.SetPlaylist(Playlist.GetPlaylist());
 
 			return base.OnConnectedAsync();
 		}

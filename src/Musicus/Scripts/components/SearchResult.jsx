@@ -14,7 +14,7 @@ class SearchResult extends React.Component {
 
 	click(e) {
 		e.preventDefault();
-        this.props.onclick(this.props.trackid, this.props.description, this.props.tracklength, this.props.url, this.props.tracksource);
+        this.props.onclick(this.props.trackid, this.props.artist, this.props.description, this.props.tracklength, this.props.url, this.props.tracksource);
     }
 
     render() {
@@ -34,9 +34,9 @@ class SearchResult extends React.Component {
         }
 
         return (
-            <div className="search-list-item" onTouchTap={this.click}>
+            <div className="search-list-item" onClick={this.click}>
                 <div className="search-list-item-title">
-                    {this.props.description}
+									{this.props.artist} - {this.props.description}
                 </div>
                 {durationTrackCount}
                 <div className="search-list-item-add">
@@ -49,11 +49,12 @@ class SearchResult extends React.Component {
 }
 
 SearchResult.propTypes = {
-    trackid: PropTypes.string,
-    description: PropTypes.string,
-    onclick: PropTypes.func,
-    tracklength: PropTypes.number,
-    searchtype: PropTypes.number,
+	trackid: PropTypes.string,
+	artist: PropTypes.string,
+  description: PropTypes.string,
+  onclick: PropTypes.func,
+  tracklength: PropTypes.number,
+  searchtype: PropTypes.number,
 	trackcount: PropTypes.number,
 	url: PropTypes.string,
 	tracksource: PropTypes.string

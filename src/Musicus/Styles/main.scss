@@ -212,6 +212,7 @@ body{
     display:flex;
     flex-direction:column;
     width:100%;
+		height:100%;
     flex:60;
     // overflow:hidden;
     border-right: 2px solid #021531;
@@ -354,12 +355,9 @@ body{
       height:100%;
       flex:7;
       background-color: #021531;
-      // border: 5px solid #021531;
-      
-      opacity: 50%;
       display:flex;
       align-items: center;
-      padding-left: 20px;
+      padding: 16.5px;
     }
 
     .body-queue-panel-content {

@@ -30,8 +30,8 @@ class SearchBar extends React.Component {
         this.props.search(searchKey);
     }
 
-    addToQueue(trackId, description, trackLength, url, source) {        
-        this.props.addToQueue(trackId, description, trackLength, url, source);
+    addToQueue(trackId, artist, description, trackLength, url, source) {        
+        this.props.addToQueue(trackId, artist, description, trackLength, url, source);
     }
 
     onEnterKeyPress(e) {
