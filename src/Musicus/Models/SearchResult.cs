@@ -1,11 +1,8 @@
-﻿namespace Musicus.Models
-{
-	public enum SearchResultType
-	{
-		Track, Playlist
-	}
+﻿using Musicus.Abstractions.Models;
 
-	public class SearchResult
+namespace Musicus.Models
+{
+	public class SearchResult : ISearchResult
 	{
 		public string TrackId { get; set; }
 		public string Artist { get; set; }

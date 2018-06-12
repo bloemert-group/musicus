@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Musicus.Agents;
+using Musicus.Abstractions.Models;
 using Musicus.Helpers;
 using Musicus.Models;
 
@@ -12,55 +12,55 @@ namespace Musicus.ApiControllers
 	public class MusicusController : Controller
 	{
 		private SignalRHelper _signalRHelper;
-		private IJingleAgent _jingleAgent;
+		private PlayerHelper _playerHelper;
 
-		public MusicusController(SignalRHelper signalRHelper)
+		public MusicusController(SignalRHelper signalRHelper, PlayerHelper playerHelper)
 		{
 			_signalRHelper = signalRHelper;
-			_jingleAgent = new JingleAgent("TODO");
+			_playerHelper = playerHelper;
 		}
 
 		[HttpPost]
 		[Route("play")]
 		public async Task<IActionResult> PlayAsync([FromBody]Track track)
 		{
-			var result = await PlayerHelper.PlayAsync(track);
+			var result = await _playerHelper.PlayAsync(track);
 
-			return Json(new { Succeed = result });
+			return Json(new { Succeed = true });
 		}
 
 		[HttpPost]
 		[Route("pause")]
 		public async Task<IActionResult> PauseAsync([FromBody]Track track)
 		{
-			var result = await PlayerHelper.PauseTrackAsync(track);
+			var result = await _playerHelper.PauseTrackAsync(track);
 
-			return Json(new { Succeed = result });
+			return Json(new { Succeed = true });
 		}
 
 		[HttpGet]
 		[Route("status/{tracksource}")]
 		public async Task<IActionResult> StatusAsync(TrackSource trackSource)
 		{
-			var result = await PlayerHelper.GetStatusAsync(trackSource);
+			var result = await _playerHelper.GetStatusAsync(trackSource);
 
-			return Json(result);
+			return Json(true);
 		}
 
 		[HttpPost]
 		[Route("next")]
 		public async Task<IActionResult> NextAsync()
 		{
-			var result = await PlayerHelper.PlayNextTrackAsync();
+			var result = await _playerHelper.PlayNextTrackAsync();
 
-			return Json(result);
+			return Json(true);
 		}
 
 		[HttpPost]
 		[Route("setvolume")]
 		public async Task<IActionResult> SetVolumeAsync([FromBody] VolumeFilter volumeFilter)
 		{
-			await PlayerHelper.SetVolumeAsync(volumeFilter);
+			await _playerHelper.SetVolumeAsync(volumeFilter);
 
 			_signalRHelper.SetVolume(volumeFilter.Volume);
 
@@ -76,7 +76,7 @@ namespace Musicus.ApiControllers
 				return null;
 			}
 
-			var result = await PlayerHelper.SearchAsync(filter);
+			var result = await _playerHelper.SearchAsync(filter);
 
 			return Json(result);
 		}
@@ -107,18 +107,18 @@ namespace Musicus.ApiControllers
 
 		[HttpGet]
 		[Route("GetJingles")]
-		public async Task<IActionResult> GetJinglesAsync()
+		public IActionResult GetJingles()
 		{
-			var result = await _jingleAgent.GetJinglesAsync();
+			var result = JingleHelper.GetJingles();
 
 			return Json(result);
 		}
 
 		[HttpPost]
 		[Route("PlayJingle")]
-		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
+		public IActionResult PlayJingle([FromBody] string filePath)
 		{
-			await _jingleAgent.PlayAsync(filePath);
+			JingleHelper.Play(filePath);
 
 			return Ok();
 		}

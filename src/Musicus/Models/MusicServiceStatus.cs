@@ -1,6 +1,8 @@
-﻿namespace Musicus.Models
+﻿using Musicus.Abstractions.Models;
+
+namespace Musicus.Models
 {
-	public class MusicServiceStatus
+	public class MusicServiceStatus : IMusicServiceStatus
 	{
 		public string Artist { get; set; }
 		public string Track { get; set; }

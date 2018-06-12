@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Musicus.Abstractions.Models;
 using Musicus.SpotifyService.Models;
 using Newtonsoft.Json;
 using SpotifyAPI.Local;
@@ -112,9 +113,9 @@ namespace Musicus.Helpers
 			return result;
 		}
 
-		public static List<SearchResult> Search(string keyword)
+		public static List<ISearchResult> Search(string keyword)
 		{
-			var result = new List<SearchResult>();
+			var result = new List<ISearchResult>();
 
 			var searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Track);
 			foreach (var t in searchItem.Tracks.Items)

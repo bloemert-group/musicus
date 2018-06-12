@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Musicus.JingleService.Models;
+using Musicus.Models;
 
-namespace Musicus.JingleService.Helpers
+namespace Musicus.Helpers
 {
 	public static class JingleHelper
 	{

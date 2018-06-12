@@ -29,4 +29,9 @@
     <Folder Include="wwwroot\style\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MusicServices\SpotifyService\SpotifyService.csproj" />
+    <ProjectReference Include="..\Musicus.Abstractions\Musicus.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

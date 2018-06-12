@@ -1,73 +1,64 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Musicus.Agents;
+using Musicus.Abstractions.Models;
+using Musicus.Abstractions.Services;
 using Musicus.Models;
 
 namespace Musicus.Helpers
 {
-	public static class PlayerHelper
+	public class PlayerHelper
 	{
-		private static ConcurrentDictionary<TrackSource, IMusicServiceAgent> MusicAgents = new ConcurrentDictionary<TrackSource, IMusicServiceAgent>();
+		private readonly IEnumerable<IMusicService> _musicServices;
 
-		static PlayerHelper()
+		public PlayerHelper(IEnumerable<IMusicService> musicServices)
 		{
-			// TODO no hardcoded urls..
-			MusicAgents.TryAdd(TrackSource.Spotify, new MusicServiceAgent("http://localhost:49194/"));
-			//MusicAgents.TryAdd(TrackSource.YouTube, new MusicServiceAgent(""));
+			_musicServices = musicServices;
 		}
 
-		public static async Task<bool> PlayAsync(Track track)
+		public async Task<bool> PlayAsync(Track track)
 		{
 			if (track == null || track.TrackSource == 0 || string.IsNullOrEmpty(track.Description))
 			{
 				return await PlayNextTrackAsync();
 			}
 
-			if (MusicAgents.TryGetValue(track.TrackSource, out var musicService))
-			{
-				return await musicService.PlayAsync(track.Url);
-			}
-			return false;
+			var musicService = _musicServices.GetMusicService(track.TrackSource);
+
+			return await musicService.PlayAsync(track.Url);
 		}
 
-		public static async Task<bool> PlayNextTrackAsync()
+		public async Task<bool> PlayNextTrackAsync()
 		{
 			var nextTrack = Playlist.GetNextTrack();
 
-			if (MusicAgents.TryGetValue(nextTrack.TrackSource, out var musicService))
-			{
-				return await musicService.PlayAsync(nextTrack.Url);
-			}
-			return false;
+			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
+
+			return await musicService.PlayAsync(nextTrack.Url); ;
 		}
 
-		public static async Task<bool> PauseTrackAsync(Track track)
+		public async Task<bool> PauseTrackAsync(Track track)
 		{
-			if (MusicAgents.TryGetValue(track.TrackSource, out var musicService))
-			{
-				return await musicService.PlayAsync(track.Url);
-			}
-			return false;
+			var musicService = _musicServices.GetMusicService(track.TrackSource);
+
+			return await musicService.PlayAsync(track.Url); ;
 		}
 
-		public static async Task<MusicServiceStatus> GetStatusAsync(TrackSource trackSource)
+		public async Task<IMusicServiceStatus> GetStatusAsync(TrackSource trackSource)
 		{
-			if (MusicAgents.TryGetValue(trackSource, out var musicService))
-			{
-				return await musicService.GetStatusAsync().ConfigureAwait(false);
-			}
-			return null;
+			var musicService = _musicServices.GetMusicService(trackSource);
+
+			return await musicService.GetStatusAsync().ConfigureAwait(false);
 		}
 
-		public static async Task<IList<SearchResult>> SearchAsync(SearchFilter filter)
+		public async Task<IList<ISearchResult>> SearchAsync(SearchFilter filter)
 		{
-			var taskList = MusicAgents.Values.Select(ma => ma.SearchAsync(filter.Keyword));
+			var taskList = _musicServices.Select(ma => ma.SearchAsync(filter.Keyword));
 
 			var taskResult = await Task.WhenAll(taskList);
 
-			var searchResult = new List<SearchResult>();
+			var searchResult = new List<ISearchResult>();
 			foreach (var tr in taskResult)
 			{
 				searchResult.AddRange(tr);
@@ -75,21 +66,32 @@ namespace Musicus.Helpers
 			return searchResult;
 		}
 
-		public static async Task<int> GetVolumeAsync(TrackSource trackSource)
+		public async Task<float> GetVolumeAsync(TrackSource trackSource)
 		{
-			if (MusicAgents.TryGetValue(trackSource, out var musicService))
-			{
-				return await musicService.GetVolumeAsync().ConfigureAwait(false);
-			}
-			return 1;
+			var musicService = _musicServices.GetMusicService(trackSource);
+
+			return await musicService.GetVolumeAsync().ConfigureAwait(false);
 		}
 
-		public static async Task SetVolumeAsync(VolumeFilter volumeFilter)
+		public async Task SetVolumeAsync(VolumeFilter volumeFilter)
 		{
-			if (MusicAgents.TryGetValue(volumeFilter.TrackSource, out var musicService))
+			var musicService = _musicServices.GetMusicService(volumeFilter.TrackSource);
+
+			await musicService.SetVolumeAsync(volumeFilter.Volume);
+		}
+	}
+
+	public static class PlayerHelperExtensions
+	{
+		public static IMusicService GetMusicService(this IEnumerable<IMusicService> musicServices, TrackSource trackSource)
+		{
+			var musicService = musicServices.FirstOrDefault(ms => ms.TrackSource == trackSource);
+
+			if (musicService == null)
 			{
-				await musicService.SetVolumeAsync(volumeFilter.Volume);
+				throw new ArgumentException(nameof(IMusicService), $"A MusicService with source {trackSource.ToString()} was requested but not implemented");
 			}
+			return musicService;
 		}
 	}
 }

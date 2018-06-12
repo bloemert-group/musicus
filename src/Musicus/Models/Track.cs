@@ -1,4 +1,6 @@
-﻿namespace Musicus.Models
+﻿using Musicus.Abstractions.Models;
+
+namespace Musicus.Models
 {
 	public class Track
 	{

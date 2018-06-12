@@ -7,10 +7,13 @@ namespace Musicus
 {
 	public class MusicusHub : Hub
 	{
-		public SignalRHelper _helper;
-		public MusicusHub(SignalRHelper helper)
+		private SignalRHelper _helper;
+		private PlayerHelper _playerHelper;
+
+		public MusicusHub(SignalRHelper helper, PlayerHelper playerHelper)
 		{
 			_helper = helper;
+			_playerHelper = playerHelper;
 		}
 
 		public override Task OnConnectedAsync()
@@ -19,8 +22,8 @@ namespace Musicus
 
 			if (currentTrack != null)
 			{
-				_helper.SetVolume(PlayerHelper.GetVolumeAsync(currentTrack.TrackSource).Result);
-				_helper.SetStatus(PlayerHelper.GetStatusAsync(currentTrack.TrackSource).Result);
+				_helper.SetVolume(_playerHelper.GetVolumeAsync(currentTrack.TrackSource).Result);
+				_helper.SetStatus(_playerHelper.GetStatusAsync(currentTrack.TrackSource).Result);
 			}
 
 			_helper.SetPlaylist(Playlist.GetPlaylist());

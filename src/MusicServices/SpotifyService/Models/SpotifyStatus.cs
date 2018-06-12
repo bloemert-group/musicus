@@ -1,6 +1,8 @@
-﻿namespace Musicus.SpotifyService.Models
+﻿using Musicus.Abstractions.Models;
+
+namespace Musicus.SpotifyService.Models
 {
-	public class SpotifyStatus
+	public class SpotifyStatus : IMusicServiceStatus
 	{
 		public string Artist { get; set; }
 		public string Track { get; set; }

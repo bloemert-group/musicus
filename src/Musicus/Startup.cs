@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Musicus.Helpers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Musicus.Abstractions.Services;
+using Musicus.Helpers;
+using SpotifyService;
 
 namespace Musicus
 {
@@ -23,9 +25,12 @@ namespace Musicus
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<SignalRHelper>();
-			
+			services.AddSingleton<PlayerHelper>();
+
 			services.AddMvc();
-			services.AddSignalR();			
+			services.AddSignalR();
+
+			services.AddTransient<IMusicService, SpotifyMusicService>();
 
 			return services.BuildServiceProvider();
 		}
@@ -52,6 +57,8 @@ namespace Musicus
 			{
 				signalRHelper.StartStatusUpdate();
 			}
+
+			JingleHelper.JingleFilePath = Configuration[nameof(JingleHelper.JingleFilePath)];
 		}
 	}
 }
