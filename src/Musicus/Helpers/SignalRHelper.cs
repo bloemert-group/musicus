@@ -2,7 +2,6 @@
 using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Models;
-using Musicus.Models.Spotify;
 
 namespace Musicus.Helpers
 {
@@ -20,9 +19,9 @@ namespace Musicus.Helpers
 			_hubContext.Clients.All.SendAsync("SetVolume", volume);
 		}
 
-		public void SetSpotifyStatus(SpotifyStatus spotifyStatus)
+		public void SetStatus(MusicServiceStatus status)
 		{
-			SetStatus(spotifyStatus.Artist, spotifyStatus.Track, spotifyStatus.Current, spotifyStatus.Length, spotifyStatus.AlbumArtWork, spotifyStatus.IsPlaying, spotifyStatus.TrackSource);
+			SetStatus(status.Artist, status.Track, status.Current, status.Length, status.AlbumArtWork, status.IsPlaying, status.TrackSource);
 		}
 
 		public void SetStatus(string artist, string track, double current, double length, string albumArtWork, bool play, string trackSource)
@@ -41,7 +40,13 @@ namespace Musicus.Helpers
 			{
 				while (true)
 				{
-					SetSpotifyStatus(SpotifyHelper.GetStatus());
+					var currentTrack = Playlist.GetCurrentTrack();
+
+					if (currentTrack != null)
+					{
+						SetStatus(PlayerHelper.GetStatusAsync(currentTrack.TrackSource).Result);
+					}
+
 					SetPlaylist(Playlist.GetPlaylist());
 
 					Thread.Sleep(1000);

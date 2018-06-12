@@ -7,7 +7,7 @@
 		public string Artist { get; set; }
 		public string Description { get; set; }
 		public string Url { get; set; }
-		public string TrackSource { get; set; }
+		public TrackSource TrackSource { get; set; }
 		public bool Played { get; set; }
 	}
 }

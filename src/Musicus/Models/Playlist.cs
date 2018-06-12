@@ -55,5 +55,12 @@ namespace Musicus.Models
 
 			Playlist.Instance.Items.TryRemove(trackIndex, out var removedTrack);
 		}
+
+		public static Track GetCurrentTrack()
+		{
+			var playlist = GetPlaylist();
+
+			return playlist.FirstOrDefault();
+		}
 	}
 }

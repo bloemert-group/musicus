@@ -1,6 +1,6 @@
-﻿namespace Musicus.Models.Spotify
+﻿namespace Musicus.Models
 {
-	public class SpotifyStatus
+	public class MusicServiceStatus
 	{
 		public string Artist { get; set; }
 		public string Track { get; set; }

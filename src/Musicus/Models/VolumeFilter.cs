@@ -1,8 +1,8 @@
 ﻿namespace Musicus.Models
 {
-	public class SearchFilter
+	public class VolumeFilter
 	{
-		public string Keyword { get; set; }
 		public TrackSource TrackSource { get; set; }
+		public int Volume { get; set; }
 	}
 }

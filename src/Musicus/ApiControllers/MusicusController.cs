@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Musicus.Agents;
 using Musicus.Helpers;
 using Musicus.Models;
 
@@ -10,51 +12,73 @@ namespace Musicus.ApiControllers
 	public class MusicusController : Controller
 	{
 		private SignalRHelper _signalRHelper;
+		private IJingleAgent _jingleAgent;
+
 		public MusicusController(SignalRHelper signalRHelper)
 		{
 			_signalRHelper = signalRHelper;
+			_jingleAgent = new JingleAgent("TODO");
 		}
 
 		[HttpPost]
 		[Route("play")]
-		public IActionResult Play([FromBody]Track track)
-			=> Json(new { Succeed = PlayerHelper.Play(track) });
+		public async Task<IActionResult> PlayAsync([FromBody]Track track)
+		{
+			var result = await PlayerHelper.PlayAsync(track);
+
+			return Json(new { Succeed = result });
+		}
 
 		[HttpPost]
 		[Route("pause")]
-		public IActionResult Pause([FromBody]Track track)
-			=> Json(new { Succeed = PlayerHelper.PauseTrack(track) });
-
-		[Route("status")]
-		public IActionResult Status()
+		public async Task<IActionResult> PauseAsync([FromBody]Track track)
 		{
-			return Json(SpotifyHelper.GetStatus());
+			var result = await PlayerHelper.PauseTrackAsync(track);
+
+			return Json(new { Succeed = result });
+		}
+
+		[HttpGet]
+		[Route("status/{tracksource}")]
+		public async Task<IActionResult> StatusAsync(TrackSource trackSource)
+		{
+			var result = await PlayerHelper.GetStatusAsync(trackSource);
+
+			return Json(result);
 		}
 
 		[HttpPost]
 		[Route("next")]
-		public IActionResult Next() => Json(new { Succeed = PlayerHelper.PlayNextTrack() });
-
-		[Route("setvolume/{volume}")]
-		public IActionResult SetVolume(float volume)
+		public async Task<IActionResult> NextAsync()
 		{
-			SpotifyHelper.SetVolume(volume);
+			var result = await PlayerHelper.PlayNextTrackAsync();
 
-			_signalRHelper.SetVolume(volume);
+			return Json(result);
+		}
+
+		[HttpPost]
+		[Route("setvolume")]
+		public async Task<IActionResult> SetVolumeAsync([FromBody] VolumeFilter volumeFilter)
+		{
+			await PlayerHelper.SetVolumeAsync(volumeFilter);
+
+			_signalRHelper.SetVolume(volumeFilter.Volume);
 
 			return Json(new { Succeed = true });
 		}
 
 		[HttpPost]
 		[Route("search")]
-		public IActionResult Search([FromBody] SearchFilter filter)
+		public async Task<IActionResult> SearchAsync([FromBody] SearchFilter filter)
 		{
 			if (string.IsNullOrEmpty(filter.Keyword))
 			{
 				return null;
 			}
 
-			return Json(SpotifyHelper.Search(filter.Keyword));
+			var result = await PlayerHelper.SearchAsync(filter);
+
+			return Json(result);
 		}
 
 		[HttpPost]
@@ -79,6 +103,24 @@ namespace Musicus.ApiControllers
 			_signalRHelper.SetPlaylist(playlist);
 
 			return Json(new { Succeed = true, Data = playlist });
+		}
+
+		[HttpGet]
+		[Route("GetJingles")]
+		public async Task<IActionResult> GetJinglesAsync()
+		{
+			var result = await _jingleAgent.GetJinglesAsync();
+
+			return Json(result);
+		}
+
+		[HttpPost]
+		[Route("PlayJingle")]
+		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
+		{
+			await _jingleAgent.PlayAsync(filePath);
+
+			return Ok();
 		}
 	}
 }

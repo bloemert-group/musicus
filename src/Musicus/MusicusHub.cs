@@ -15,9 +15,14 @@ namespace Musicus
 
 		public override Task OnConnectedAsync()
 		{
-			//helper.SetQueue(QueueItemFactory.Instance.ListQueue().ToList());
-			_helper.SetVolume(SpotifyHelper.GetVolume());
-			_helper.SetSpotifyStatus(SpotifyHelper.GetStatus());
+			var currentTrack = Playlist.GetCurrentTrack();
+
+			if (currentTrack != null)
+			{
+				_helper.SetVolume(PlayerHelper.GetVolumeAsync(currentTrack.TrackSource).Result);
+				_helper.SetStatus(PlayerHelper.GetStatusAsync(currentTrack.TrackSource).Result);
+			}
+
 			_helper.SetPlaylist(Playlist.GetPlaylist());
 
 			return base.OnConnectedAsync();

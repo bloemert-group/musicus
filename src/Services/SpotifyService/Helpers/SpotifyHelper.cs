@@ -4,8 +4,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Musicus.Models;
-using Musicus.Models.Spotify;
+using Musicus.SpotifyService.Models;
 using Newtonsoft.Json;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Enums;
@@ -85,16 +84,11 @@ namespace Musicus.Helpers
 
 		public static void Previous() => SpotifyAPI.Previous();
 
-		public static void Next() => SpotifyAPI.Skip();
+		public static void Next(string url) => Play(url);
 
-		public static float GetVolume()
-		{
-			return SpotifyAPI.GetSpotifyVolume();
-		}
-		public static void SetVolume(float volume)
-		{
-			SpotifyAPI.SetSpotifyVolume(volume);
-		}
+		public static float GetVolume() => SpotifyAPI.GetSpotifyVolume();
+
+		public static void SetVolume(float volume) => SpotifyAPI.SetSpotifyVolume(volume);
 
 		public static SpotifyStatus GetStatus()
 		{
