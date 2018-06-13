@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MusicServices", "MusicServi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musicus.Abstractions", "Musicus.Abstractions\Musicus.Abstractions.csproj", "{A3688010-B8FB-49FB-BD0D-130478B7D7F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyService", "MusicServices\SpotifyService\SpotifyService.csproj", "{F5CB8B68-BBF6-46DD-985E-5DD11F97B2E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyService", "MusicServices\SpotifyService\SpotifyService.csproj", "{F5CB8B68-BBF6-46DD-985E-5DD11F97B2E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{830EB201-639D-4978-A60E-EABA3397295A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{D9F2F6DC-027F-42CC-88EA-3087FA8E70DB} = {B3D245AC-1C86-4DE5-8DF4-07B8973541AB}
+		{A3688010-B8FB-49FB-BD0D-130478B7D7F0} = {830EB201-639D-4978-A60E-EABA3397295A}
 		{F5CB8B68-BBF6-46DD-985E-5DD11F97B2E5} = {B3D245AC-1C86-4DE5-8DF4-07B8973541AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

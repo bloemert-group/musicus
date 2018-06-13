@@ -6,13 +6,13 @@ using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
 using Musicus.Models;
 
-namespace Musicus.Helpers
+namespace Musicus.Managers
 {
-	public class PlayerHelper
+	public class PlayerManager
 	{
 		private readonly IEnumerable<IMusicService> _musicServices;
 
-		public PlayerHelper(IEnumerable<IMusicService> musicServices)
+		public PlayerManager(IEnumerable<IMusicService> musicServices)
 		{
 			_musicServices = musicServices;
 		}
@@ -35,14 +35,14 @@ namespace Musicus.Helpers
 
 			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
 
-			return await musicService.PlayAsync(nextTrack.Url); ;
+			return await musicService.PlayAsync(nextTrack.Url);
 		}
 
 		public async Task<bool> PauseTrackAsync(Track track)
 		{
 			var musicService = _musicServices.GetMusicService(track.TrackSource);
 
-			return await musicService.PlayAsync(track.Url); ;
+			return await musicService.PlayAsync(track.Url);
 		}
 
 		public async Task<IMusicServiceStatus> GetStatusAsync(TrackSource trackSource)

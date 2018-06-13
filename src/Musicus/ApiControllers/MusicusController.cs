@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Musicus.Abstractions.Models;
 using Musicus.Helpers;
+using Musicus.Managers;
 using Musicus.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Musicus.ApiControllers
 {
@@ -12,55 +11,55 @@ namespace Musicus.ApiControllers
 	public class MusicusController : Controller
 	{
 		private SignalRHelper _signalRHelper;
-		private PlayerHelper _playerHelper;
+		private PlayerManager _playerManager;
 
-		public MusicusController(SignalRHelper signalRHelper, PlayerHelper playerHelper)
+		public MusicusController(SignalRHelper signalRHelper, PlayerManager playerManager)
 		{
 			_signalRHelper = signalRHelper;
-			_playerHelper = playerHelper;
+			_playerManager = playerManager;
 		}
 
 		[HttpPost]
 		[Route("play")]
 		public async Task<IActionResult> PlayAsync([FromBody]Track track)
 		{
-			var result = await _playerHelper.PlayAsync(track);
+			var result = await _playerManager.PlayAsync(track);
 
-			return Json(new { Succeed = true });
+			return Json(new { Succeed = result });
 		}
 
 		[HttpPost]
 		[Route("pause")]
 		public async Task<IActionResult> PauseAsync([FromBody]Track track)
 		{
-			var result = await _playerHelper.PauseTrackAsync(track);
+			var result = await _playerManager.PauseTrackAsync(track);
 
-			return Json(new { Succeed = true });
+			return Json(new { Succeed = result });
 		}
 
 		[HttpGet]
 		[Route("status/{tracksource}")]
 		public async Task<IActionResult> StatusAsync(TrackSource trackSource)
 		{
-			var result = await _playerHelper.GetStatusAsync(trackSource);
+			var result = await _playerManager.GetStatusAsync(trackSource);
 
-			return Json(true);
+			return Json(result);
 		}
 
 		[HttpPost]
 		[Route("next")]
 		public async Task<IActionResult> NextAsync()
 		{
-			var result = await _playerHelper.PlayNextTrackAsync();
+			var result = await _playerManager.PlayNextTrackAsync();
 
-			return Json(true);
+			return Json(result);
 		}
 
 		[HttpPost]
 		[Route("setvolume")]
 		public async Task<IActionResult> SetVolumeAsync([FromBody] VolumeFilter volumeFilter)
 		{
-			await _playerHelper.SetVolumeAsync(volumeFilter);
+			await _playerManager.SetVolumeAsync(volumeFilter);
 
 			_signalRHelper.SetVolume(volumeFilter.Volume);
 
@@ -76,7 +75,7 @@ namespace Musicus.ApiControllers
 				return null;
 			}
 
-			var result = await _playerHelper.SearchAsync(filter);
+			var result = await _playerManager.SearchAsync(filter);
 
 			return Json(result);
 		}

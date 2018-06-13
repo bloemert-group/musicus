@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Abstractions.Models;
+using Musicus.Managers;
 using Musicus.Models;
 
 namespace Musicus.Helpers
@@ -9,12 +10,12 @@ namespace Musicus.Helpers
 	public class SignalRHelper
 	{
 		private IHubContext<MusicusHub> _hubContext;
-		private readonly PlayerHelper _playerHelper;
+		private readonly PlayerManager _playerManager;
 
-		public SignalRHelper(IHubContext<MusicusHub> hubContext, PlayerHelper playerHelper)
+		public SignalRHelper(IHubContext<MusicusHub> hubContext, PlayerManager playerManager)
 		{
 			_hubContext = hubContext;
-			_playerHelper = playerHelper;
+			_playerManager = playerManager;
 		}
 
 		public void SetVolume(float volume)
@@ -47,7 +48,7 @@ namespace Musicus.Helpers
 
 					if (currentTrack != null)
 					{
-						SetStatus(_playerHelper.GetStatusAsync(currentTrack.TrackSource).Result);
+						SetStatus(_playerManager.GetStatusAsync(currentTrack.TrackSource).Result);
 					}
 
 					SetPlaylist(Playlist.GetPlaylist());

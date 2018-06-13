@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Musicus.Abstractions.Services;
 using Musicus.Helpers;
+using Musicus.Managers;
 using SpotifyService;
 
 namespace Musicus
@@ -25,7 +26,7 @@ namespace Musicus
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<SignalRHelper>();
-			services.AddSingleton<PlayerHelper>();
+			services.AddSingleton<PlayerManager>();
 
 			services.AddMvc();
 			services.AddSignalR();
