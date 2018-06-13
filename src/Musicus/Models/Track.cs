@@ -11,5 +11,6 @@ namespace Musicus.Models
 		public string Url { get; set; }
 		public TrackSource TrackSource { get; set; }
 		public bool Played { get; set; }
+		public bool IsPlaying { get; set; }
 	}
 }

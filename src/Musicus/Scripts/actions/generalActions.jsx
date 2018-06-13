@@ -119,9 +119,6 @@ export function pause(currentTrack) {
 			body: JSON.stringify(track)
 		})
 			.then(response => response.json())
-			.then(json => {
-				console.log(json);
-			})
 			.catch((e) => {
 				console.log(e);
 			});
@@ -184,13 +181,19 @@ function setQueueInfo(queue) {
 	}
 }
 
-export function setVolume(percentage) {
+export function setVolume(trackSource, percentage) {
 	return (dispatch) => {
-		fetch(`${general.API_URL_VOLUME}/${percentage}`, {
-			method: 'GET',
+		const track = {
+			TrackSource: trackSource,
+			Volume: percentage,
+		};
+
+		fetch(general.API_URL_VOLUME, {
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
-			}
+			},
+			body: JSON.stringify(track)
 		})
 			.then(response => response.json())
 			.then(json => {

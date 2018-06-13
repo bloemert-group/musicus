@@ -7,7 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Musicus.Abstractions\Musicus.Abstractions.csproj" />
     <ProjectReference Include="..\..\Musicus.Models\Musicus.Models.csproj" />
-    <ProjectReference Include="..\..\SpotifyAPI-NET\SpotifyAPI.Core\SpotifyAPI.Core.csproj" />
   </ItemGroup>
 
 </Project>

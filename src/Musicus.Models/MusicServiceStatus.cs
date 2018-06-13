@@ -1,8 +1,8 @@
 ﻿using Musicus.Abstractions.Models;
 
-namespace Musicus.SpotifyService.Models
+namespace Musicus.Models
 {
-	public class SpotifyStatus : IMusicServiceStatus
+	public class MusicServiceStatus : IMusicServiceStatus
 	{
 		public string Artist { get; set; }
 		public string Track { get; set; }
@@ -11,6 +11,6 @@ namespace Musicus.SpotifyService.Models
 		public string AlbumArtWork { get; set; }
 
 		public bool IsPlaying { get; set; }
-		public string TrackSource { get; set; }
+		public TrackSource? TrackSource { get; set; }
 	}
 }

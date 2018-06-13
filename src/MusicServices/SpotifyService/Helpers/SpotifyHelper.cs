@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
+using Musicus.Models;
 using Musicus.SpotifyService.Models;
 using Newtonsoft.Json;
 using SpotifyAPI.Local;
@@ -91,9 +92,9 @@ namespace Musicus.Helpers
 
 		public static void SetVolume(float volume) => SpotifyAPI.SetSpotifyVolume(volume);
 
-		public static SpotifyStatus GetStatus()
+		public static IMusicServiceStatus GetStatus()
 		{
-			var result = new SpotifyStatus();
+			var result = new MusicServiceStatus();
 
 			var status = SpotifyAPI.GetStatus();
 			if (status != null)
@@ -103,7 +104,7 @@ namespace Musicus.Helpers
 				result.Track = status.Track?.TrackResource?.Name;
 				result.Length = status.Track != null ? status.Track.Length : 0;
 				result.Current = status.PlayingPosition;
-				result.TrackSource = "Spotify";
+				result.TrackSource = TrackSource.Spotify;
 				if (status.Track != null && status.Track.AlbumResource != null)
 				{
 					result.AlbumArtWork = status.Track.GetAlbumArtUrl(AlbumArtSize.Size160);
@@ -128,7 +129,7 @@ namespace Musicus.Helpers
 					TrackLength = t.DurationMs,
 					Type = SearchResultType.Track,
 					Url = t.Uri,
-					TrackSource = "Spotify"
+					TrackSource = TrackSource.Spotify
 				});
 			}
 
@@ -142,7 +143,7 @@ namespace Musicus.Helpers
 					TrackCount = p.Tracks.Total,
 					Type = SearchResultType.Playlist,
 					Url = p.Uri,
-					TrackSource = "Spotify"
+					TrackSource = TrackSource.Spotify
 				});
 			}
 

@@ -31,7 +31,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicServices\SpotifyService\SpotifyService.csproj" />
+    <ProjectReference Include="..\MusicServices\YouTubeService\YouTubeService.csproj" />
     <ProjectReference Include="..\Musicus.Abstractions\Musicus.Abstractions.csproj" />
+    <ProjectReference Include="..\Musicus.Models\Musicus.Models.csproj" />
   </ItemGroup>
 
 </Project>

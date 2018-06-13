@@ -33,11 +33,11 @@ class Player extends React.Component {
     }
     return (
       <div className="controls-buttons">
-        <div onTouchTap={this.clickPlay} className="button">
+        <div onClick={this.clickPlay} className="button">
           <i className={icon} style={btnStyle}></i>
           <Ink />
         </div>
-        <div onTouchTap={this.clickNext} className="button">
+				<div onClick={this.clickNext} className="button">
           <i className='icon step forward' style={btnStyle}></i>
           <Ink />
         </div>

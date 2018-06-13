@@ -8,6 +8,7 @@ using Musicus.Abstractions.Services;
 using Musicus.Helpers;
 using Musicus.Managers;
 using SpotifyService;
+using YouTubeService;
 
 namespace Musicus
 {
@@ -32,6 +33,7 @@ namespace Musicus
 			services.AddSignalR();
 
 			services.AddTransient<IMusicService, SpotifyMusicService>();
+			services.AddTransient<IMusicService, YouTubeMusicService>();
 
 			return services.BuildServiceProvider();
 		}

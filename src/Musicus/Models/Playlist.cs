@@ -33,18 +33,30 @@ namespace Musicus.Models
 		{
 			var playlist = GetPlaylist();
 
-			var nextTrack = playlist.FirstOrDefault();
+			var nextTrack = playlist.FirstOrDefault(tr => !tr.IsPlaying);
+			var currentTrack = GetCurrentTrack();
 
-			Playlist.SetTrackToPlayed(nextTrack);
+			if (currentTrack != null)
+			{
+				Playlist.SetTrackToPlayed(currentTrack);
+			}
+			if (nextTrack != null)
+			{
+				nextTrack.IsPlaying = true;
+			}
+
 			return nextTrack;
 		}
 
 		public static void SetTrackToPlayed(Track track)
 		{
+			if (track == null) return;
+
 			var playlist = GetPlaylist();
 			var trackIndex = playlist.IndexOf(track);
 
 			track.Played = true;
+			track.IsPlaying = false;
 			Playlist.Instance.Items.TryUpdate(trackIndex, track, playlist[trackIndex]);
 		}
 
@@ -60,7 +72,7 @@ namespace Musicus.Models
 		{
 			var playlist = GetPlaylist();
 
-			return playlist.FirstOrDefault();
+			return playlist.FirstOrDefault(track => track.IsPlaying);
 		}
 	}
 }

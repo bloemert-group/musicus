@@ -9,6 +9,6 @@
 		string AlbumArtWork { get; set; }
 
 		bool IsPlaying { get; set; }
-		string TrackSource { get; set; }
+		TrackSource? TrackSource { get; set; }
 	}
 }

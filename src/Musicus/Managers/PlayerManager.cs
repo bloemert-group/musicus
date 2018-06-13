@@ -33,6 +33,8 @@ namespace Musicus.Managers
 		{
 			var nextTrack = Playlist.GetNextTrack();
 
+			if (nextTrack == null) return false;
+
 			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
 
 			return await musicService.PlayAsync(nextTrack.Url);
@@ -42,14 +44,24 @@ namespace Musicus.Managers
 		{
 			var musicService = _musicServices.GetMusicService(track.TrackSource);
 
-			return await musicService.PlayAsync(track.Url);
+			return await musicService.PauseAsync();
 		}
 
-		public async Task<IMusicServiceStatus> GetStatusAsync(TrackSource trackSource)
+		public async Task<IMusicServiceStatus> GetStatusAsync(Track currentTrack)
 		{
-			var musicService = _musicServices.GetMusicService(trackSource);
+			var musicService = _musicServices.GetMusicService(currentTrack.TrackSource);
 
-			return await musicService.GetStatusAsync().ConfigureAwait(false);
+			var status = await musicService.GetStatusAsync().ConfigureAwait(false);
+
+			// End of song, play next
+			if ((!currentTrack.IsPlaying && !status.IsPlaying) || (status.IsPlaying && status.Current >= (status.Length - 1.5)))
+			{
+				await PlayNextTrackAsync();
+
+				// Fetch status again
+				return await musicService.GetStatusAsync().ConfigureAwait(false);
+			}
+			return status;
 		}
 
 		public async Task<IList<ISearchResult>> SearchAsync(SearchFilter filter)
