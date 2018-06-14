@@ -68,7 +68,8 @@ namespace Musicus.Managers
 			var status = await musicService.GetStatusAsync().ConfigureAwait(false);
 
 			// End of song, play next
-			if ((!currentTrack.IsPlaying && !status.IsPlaying) || (status.IsPlaying && status.Current >= (status.Length - 1.5)))
+			if ((!currentTrack.IsPlaying && !status.IsPlaying) ||
+					(currentTrack.Artist == status.Artist && currentTrack.Description == status.Track && status.IsPlaying && status.Current >= (status.Length - 2)))
 			{
 				await PlayNextTrackAsync();
 
