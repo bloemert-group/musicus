@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Open-Sans-regular/Open-Sans-regular.eot');
+  src: url('fonts/Open-Sans-regular/Open-Sans-regular.eot?#iefix') format('embedded-opentype'),
+       local('Open Sans'),
+       local('Open-Sans-regular'),
+       url('fonts/Open-Sans-regular/Open-Sans-regular.woff2') format('woff2'),
+       url('fonts/Open-Sans-regular/Open-Sans-regular.woff') format('woff'),
+       url('fonts/Open-Sans-regular/Open-Sans-regular.ttf') format('truetype'),
+       url('fonts/Open-Sans-regular/Open-Sans-regular.svg#OpenSans') format('svg');
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Work-Sans-regular/Work-Sans-regular.eot');
+  src: url('fonts/Work-Sans-regular/Work-Sans-regular.eot?#iefix') format('embedded-opentype'),
+       local('Work Sans'),
+       local('Work-Sans-regular'),
+       url('fonts/Work-Sans-regular/Work-Sans-regular.woff2') format('woff2'),
+       url('fonts/Work-Sans-regular/Work-Sans-regular.woff') format('woff'),
+       url('fonts/Work-Sans-regular/Work-Sans-regular.ttf') format('truetype'),
+       url('fonts/Work-Sans-regular/Work-Sans-regular.svg#WorkSans') format('svg');
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-style: normal;
+  src: url("fonts/Montserrat/Montserrat-Light.ttf")
+}
