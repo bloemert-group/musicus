@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Abstractions.Models;
 using Musicus.Managers;
@@ -51,11 +52,11 @@ namespace Musicus.Helpers
 
 		public void StartStatusUpdate()
 		{
-			var t = new Thread(() =>
+			var t = new Thread(async () =>
 			{
 				while (true)
 				{
-					StatusUpdate();
+					await StatusUpdateAsync();
 
 					Thread.Sleep(1000);
 					//your infinite loop 
@@ -65,13 +66,15 @@ namespace Musicus.Helpers
 			t.Start();
 		}
 
-		public void StatusUpdate()
+		public async Task StatusUpdateAsync()
 		{
 			var currentTrack = Playlist.GetCurrentTrack();
 
 			if (currentTrack != null)
 			{
-				SetStatus(_playerManager.GetStatusAsync(currentTrack).Result);
+				var status = await _playerManager.GetStatusAsync(currentTrack);
+
+				SetStatus(status);
 			}
 			else
 			{

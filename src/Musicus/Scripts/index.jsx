@@ -1,6 +1,7 @@
 ﻿/* eslint-disable no-unused-vars */
 
 require('../Styles/main.scss');
+require('../Styles/icon.scss');
 
 import React from 'react'
 

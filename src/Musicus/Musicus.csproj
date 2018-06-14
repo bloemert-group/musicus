@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Styles\icons\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\style\" />
   </ItemGroup>

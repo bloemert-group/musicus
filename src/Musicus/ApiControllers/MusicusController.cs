@@ -122,22 +122,19 @@ namespace Musicus.ApiControllers
 		[Route("playjingle")]
 		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
 		{
-			const int reduceVolume = 10;
-			float currentVolume = 50;
+			const int reduceVolume = 15;
 
 			var currentTrack = Playlist.GetCurrentTrack();
 			if (currentTrack != null)
 			{
-				currentVolume = await _playerManager.GetVolumeAsync(currentTrack.TrackSource);
-
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = (int)currentVolume - reduceVolume });
+				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = PlayerManager.CurrentVolume - reduceVolume });
 			}
 
 			JingleHelper.Play(filePath);
 
 			if (currentTrack != null)
 			{
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = (int)currentVolume });
+				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = PlayerManager.CurrentVolume });
 			}
 
 			return Ok();

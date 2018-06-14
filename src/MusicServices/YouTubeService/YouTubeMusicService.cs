@@ -45,7 +45,7 @@ namespace YouTubeService
 			return new List<ISearchResult>();
 		}
 
-		public Task SetVolumeAsync(int volume)
+		public Task SetVolumeAsync(float volume)
 		{
 			throw new NotImplementedException();
 		}

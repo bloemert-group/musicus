@@ -10,7 +10,7 @@ class QueueItem extends React.Component {
         super(props);
     }
     render() {
-        var momentLength =  moment.duration(this.props.tracklength * 1000);
+        var momentLength =  moment.duration(this.props.tracklength);
         var trackLengthFormatted = `${momentLength.minutes()}:${momentLength.seconds().pad()}`;
 
         var classNameTitle = "queue-list-item-title";

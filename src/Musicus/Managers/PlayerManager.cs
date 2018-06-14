@@ -11,6 +11,20 @@ namespace Musicus.Managers
 	public class PlayerManager
 	{
 		private readonly IEnumerable<IMusicService> _musicServices;
+		private static float? _currentVolume;
+		public static float CurrentVolume
+		{
+			get
+			{
+				if (_currentVolume == null)
+				{
+					// default value = 30
+					_currentVolume = 30;
+				}
+				return _currentVolume.Value;
+			}
+			set => _currentVolume = value;
+		}
 
 		public PlayerManager(IEnumerable<IMusicService> musicServices)
 		{
@@ -78,16 +92,13 @@ namespace Musicus.Managers
 			return searchResult;
 		}
 
-		public async Task<float> GetVolumeAsync(TrackSource trackSource)
-		{
-			var musicService = _musicServices.GetMusicService(trackSource);
-
-			return await musicService.GetVolumeAsync().ConfigureAwait(false);
-		}
+		public float GetVolume() => CurrentVolume;
 
 		public async Task SetVolumeAsync(VolumeFilter volumeFilter)
 		{
 			var musicService = _musicServices.GetMusicService(volumeFilter.TrackSource);
+
+			CurrentVolume = volumeFilter.Volume;
 
 			await musicService.SetVolumeAsync(volumeFilter.Volume);
 		}

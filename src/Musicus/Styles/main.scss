@@ -66,7 +66,7 @@ body{
 }
 
 .page-header {
-  height:15%;
+  height:150px;
   display:flex;
   justify-content: center;
   align-items: center;
@@ -74,8 +74,9 @@ body{
 
   .page-header-album-art{
     display: flex;
-    height:100%;
     width: 10%;
+		margin-left: 20px;
+		padding: 5px;
   }
 
   .page-header-controls{
@@ -85,7 +86,6 @@ body{
 
     .controls-song {
       display:flex;
-      border-right: 10px solid #021531;
       width:30%;
       height: 100%;
       flex:30;
@@ -249,8 +249,6 @@ body{
 
       .search-bar-btn{
         flex:10;
-        height: 100%;
-        width:100px;
         border: 5px solid #021531;
         background-color: #737495;        
         justify-content: center;

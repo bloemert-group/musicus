@@ -27,9 +27,7 @@ function setSearchResultAction(searchResult) {
 export function search(keyword) {
 	return (dispatch, getState) => {
 		const searchFilter = {
-			Keyword: keyword,
-			Spotify: true,
-			Youtube: false
+			Keyword: keyword
 		};
 
 		fetch(general.API_URL_SEARCH, {

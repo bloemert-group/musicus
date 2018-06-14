@@ -34,6 +34,6 @@ namespace SpotifyService
 
 		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await Task.Run(() => SpotifyHelper.Search(keyword));
 
-		public async Task SetVolumeAsync(int volume) => await Task.Run(() => SpotifyHelper.SetVolume(volume));
+		public async Task SetVolumeAsync(float volume) => await Task.Run(() => SpotifyHelper.SetVolume(volume));
 	}
 }
