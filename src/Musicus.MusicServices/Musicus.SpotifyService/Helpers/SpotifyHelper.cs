@@ -133,19 +133,19 @@ namespace Musicus.Helpers
 				});
 			}
 
-			searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Playlist);
-			foreach (var p in searchItem.Playlists.Items)
-			{
-				result.Add(new SearchResult
-				{
-					TrackId = p.Id,
-					Description = p.Name,
-					TrackCount = p.Tracks.Total,
-					Type = SearchResultType.Playlist,
-					Url = p.Uri,
-					TrackSource = TrackSource.Spotify
-				});
-			}
+			//searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Playlist);
+			//foreach (var p in searchItem.Playlists.Items)
+			//{
+			//	result.Add(new SearchResult
+			//	{
+			//		TrackId = p.Id,
+			//		Description = p.Name,
+			//		TrackCount = p.Tracks.Total,
+			//		Type = SearchResultType.Playlist,
+			//		Url = p.Uri,
+			//		TrackSource = TrackSource.Spotify
+			//	});
+			//}
 
 			return result;
 		}

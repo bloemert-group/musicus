@@ -6,9 +6,9 @@ using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
 using Musicus.Models;
 
-namespace Musicus.Managers
+namespace Musicus
 {
-	public class PlayerManager
+	public class Player
 	{
 		private readonly IEnumerable<IMusicService> _musicServices;
 		private static float? _currentVolume;
@@ -26,7 +26,7 @@ namespace Musicus.Managers
 			set => _currentVolume = value;
 		}
 
-		public PlayerManager(IEnumerable<IMusicService> musicServices)
+		public Player(IEnumerable<IMusicService> musicServices)
 		{
 			_musicServices = musicServices;
 		}
@@ -105,7 +105,7 @@ namespace Musicus.Managers
 		}
 	}
 
-	public static class PlayerHelperExtensions
+	static class PlayerExtensions
 	{
 		public static IMusicService GetMusicService(this IEnumerable<IMusicService> musicServices, TrackSource trackSource)
 		{

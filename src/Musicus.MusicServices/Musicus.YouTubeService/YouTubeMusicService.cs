@@ -15,11 +15,6 @@ namespace YouTubeService
 			throw new NotImplementedException();
 		}
 
-		public Task<float> GetVolumeAsync()
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<bool> NextAsync(string url)
 		{
 			throw new NotImplementedException();
@@ -43,11 +38,6 @@ namespace YouTubeService
 		public async Task<IList<ISearchResult>> SearchAsync(string keyword)
 		{
 			return new List<ISearchResult>();
-		}
-
-		public Task SetVolumeAsync(float volume)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

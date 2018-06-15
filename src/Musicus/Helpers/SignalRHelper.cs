@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Abstractions.Models;
-using Musicus.Managers;
 using Musicus.Models;
 
 namespace Musicus.Helpers
@@ -11,7 +10,7 @@ namespace Musicus.Helpers
 	public class SignalRHelper
 	{
 		private IHubContext<MusicusHub> _hubContext;
-		private readonly PlayerManager _playerManager;
+		private readonly Player _player;
 
 		protected IMusicServiceStatus DefaultStatus => new MusicServiceStatus
 		{
@@ -21,10 +20,10 @@ namespace Musicus.Helpers
 			AlbumArtWork = "http://icons.iconarchive.com/icons/webalys/kameleon.pics/64/Cloud-Music-icon.png"
 		};
 
-		public SignalRHelper(IHubContext<MusicusHub> hubContext, PlayerManager playerManager)
+		public SignalRHelper(IHubContext<MusicusHub> hubContext, Player player)
 		{
 			_hubContext = hubContext;
-			_playerManager = playerManager;
+			_player = player;
 		}
 
 		public void SetVolume(float volume)
@@ -72,7 +71,7 @@ namespace Musicus.Helpers
 
 			if (currentTrack != null)
 			{
-				var status = await _playerManager.GetStatusAsync(currentTrack);
+				var status = await _player.GetStatusAsync(currentTrack);
 
 				SetStatus(status);
 			}

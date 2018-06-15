@@ -12,8 +12,6 @@ namespace SpotifyService
 
 		public async Task<IMusicServiceStatus> GetStatusAsync() => await Task.Run(() => SpotifyHelper.GetStatus());
 
-		public async Task<float> GetVolumeAsync() => await Task.Run(() => SpotifyHelper.GetVolume());
-
 		public async Task<bool> NextAsync(string url)
 		{
 			await Task.Run(() => SpotifyHelper.Next(url));
@@ -33,7 +31,5 @@ namespace SpotifyService
 		public async Task<bool> PlayAsync(string url) => await Task.Run(() => SpotifyHelper.Play(url));
 
 		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await Task.Run(() => SpotifyHelper.Search(keyword));
-
-		public async Task SetVolumeAsync(float volume) => await Task.Run(() => SpotifyHelper.SetVolume(volume));
 	}
 }

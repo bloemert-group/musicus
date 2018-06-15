@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Musicus.Helpers;
-using Musicus.Managers;
 using Musicus.Models;
 
 namespace Musicus.ApiControllers
@@ -10,19 +9,19 @@ namespace Musicus.ApiControllers
 	public class MusicusController : Controller
 	{
 		private SignalRHelper _signalRHelper;
-		private PlayerManager _playerManager;
+		private Player _player;
 
-		public MusicusController(SignalRHelper signalRHelper, PlayerManager playerManager)
+		public MusicusController(SignalRHelper signalRHelper, Player player)
 		{
 			_signalRHelper = signalRHelper;
-			_playerManager = playerManager;
+			_player = player;
 		}
 
 		[HttpPost]
 		[Route("play")]
 		public async Task<IActionResult> PlayAsync([FromBody]Track track)
 		{
-			var result = await _playerManager.PlayAsync(track);
+			var result = await _player.PlayAsync(track);
 
 			return Json(new { Succeed = result });
 		}
@@ -31,7 +30,7 @@ namespace Musicus.ApiControllers
 		[Route("pause")]
 		public async Task<IActionResult> PauseAsync([FromBody]Track track)
 		{
-			var result = await _playerManager.PauseTrackAsync(track);
+			var result = await _player.PauseTrackAsync(track);
 
 			return Json(new { Succeed = result });
 		}
@@ -46,7 +45,7 @@ namespace Musicus.ApiControllers
 				return Ok();
 			}
 
-			var result = await _playerManager.GetStatusAsync(currentTrack);
+			var result = await _player.GetStatusAsync(currentTrack);
 
 			return Json(result);
 		}
@@ -55,7 +54,7 @@ namespace Musicus.ApiControllers
 		[Route("next")]
 		public async Task<IActionResult> NextAsync()
 		{
-			var result = await _playerManager.PlayNextTrackAsync();
+			var result = await _player.PlayNextTrackAsync();
 
 			return Json(result);
 		}
@@ -64,7 +63,7 @@ namespace Musicus.ApiControllers
 		[Route("setvolume")]
 		public async Task<IActionResult> SetVolumeAsync([FromBody] VolumeFilter volumeFilter)
 		{
-			await _playerManager.SetVolumeAsync(volumeFilter);
+			await _player.SetVolumeAsync(volumeFilter);
 
 			_signalRHelper.SetVolume(volumeFilter.Volume);
 
@@ -80,7 +79,7 @@ namespace Musicus.ApiControllers
 				return null;
 			}
 
-			var result = await _playerManager.SearchAsync(filter);
+			var result = await _player.SearchAsync(filter);
 
 			return Json(result);
 		}
@@ -127,14 +126,14 @@ namespace Musicus.ApiControllers
 			var currentTrack = Playlist.GetCurrentTrack();
 			if (currentTrack != null)
 			{
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = PlayerManager.CurrentVolume - reduceVolume });
+				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = Player.CurrentVolume - reduceVolume });
 			}
 
 			JingleHelper.Play(filePath);
 
 			if (currentTrack != null)
 			{
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = PlayerManager.CurrentVolume });
+				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = Player.CurrentVolume });
 			}
 
 			return Ok();

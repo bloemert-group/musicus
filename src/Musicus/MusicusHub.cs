@@ -1,25 +1,24 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Helpers;
-using Musicus.Managers;
 
 namespace Musicus
 {
 	public class MusicusHub : Hub
 	{
 		private SignalRHelper _helper;
-		private PlayerManager _playerManager;
+		private Player _player;
 
-		public MusicusHub(SignalRHelper helper, PlayerManager playerManager)
+		public MusicusHub(SignalRHelper helper, Player player)
 		{
 			_helper = helper;
-			_playerManager = playerManager;
+			_player = player;
 		}
 
 		public override async Task OnConnectedAsync()
 		{
 			await _helper.StatusUpdateAsync();
-			_helper.SetVolume(_playerManager.GetVolume());
+			_helper.SetVolume(_player.GetVolume());
 
 			await base.OnConnectedAsync();
 		}
