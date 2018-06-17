@@ -61,9 +61,9 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("setvolume")]
-		public async Task<IActionResult> SetVolumeAsync([FromBody] VolumeFilter volumeFilter)
+		public IActionResult SetVolume([FromBody] VolumeFilter volumeFilter)
 		{
-			await _player.SetVolumeAsync(volumeFilter);
+			_player.SetVolume(volumeFilter);
 
 			_signalRHelper.SetVolume(volumeFilter.Volume);
 
@@ -86,7 +86,7 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("addtoqueue")]
-		public IActionResult AddToQueue([FromBody] Track item)
+		public async Task<IActionResult> AddToQueueAsync([FromBody] Track item)
 		{
 			if (string.IsNullOrEmpty(item.TrackId))
 			{
@@ -94,6 +94,11 @@ namespace Musicus.ApiControllers
 			}
 
 			Playlist.AddItemToList(item);
+
+			if (Playlist.GetPlaylist().Count == 1)
+			{
+				await _player.PlayNextTrackAsync();
+			}
 
 			return GetPlaylist();
 		}
@@ -119,21 +124,22 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("playjingle")]
-		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
+		public IActionResult PlayJingle([FromBody] string filePath)
 		{
 			const int reduceVolume = 15;
+			var currentVolume = VolumeHelper.GetVolume();
 
 			var currentTrack = Playlist.GetCurrentTrack();
 			if (currentTrack != null)
 			{
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = Player.CurrentVolume - reduceVolume });
+				SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume - reduceVolume });
 			}
 
 			JingleHelper.Play(filePath);
 
 			if (currentTrack != null)
 			{
-				await SetVolumeAsync(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = Player.CurrentVolume });
+				SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume });
 			}
 
 			return Ok();

@@ -12,6 +12,7 @@ using SpotifyAPI.Local;
 using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Enums;
+using SpotifyAPI.Web.Models;
 
 namespace Musicus.Helpers
 {
@@ -34,19 +35,22 @@ namespace Musicus.Helpers
 			}
 		}
 
+		private static AuthorizationModel _authorizationModel;
+
 		private static SpotifyWebAPI _spotifyWebAPI;
 		private static SpotifyWebAPI SpotifyWebAPI
 		{
 			get
 			{
-				if (_spotifyWebAPI == null)
+				if (_spotifyWebAPI == null || _authorizationModel.IsExpired())
 				{
-					var tokenObj = GetClientCredentialsAuthToken();
+					_authorizationModel = GetClientCredentialsAuthToken();
 					_spotifyWebAPI = new SpotifyWebAPI
 					{
-						AccessToken = tokenObj.TokenType + " " + tokenObj.AccessToken
+						AccessToken = _authorizationModel.TokenType + " " + _authorizationModel.AccessToken,
 					};
 				}
+
 				return _spotifyWebAPI;
 			}
 
@@ -57,7 +61,16 @@ namespace Musicus.Helpers
 			var webClient = new WebClient();
 
 			var postparams = new NameValueCollection();
-			postparams.Add("grant_type", "client_credentials");
+			if (_authorizationModel?.IsExpired() == true && !string.IsNullOrEmpty(_authorizationModel.RefreshToken))
+			{
+				postparams.Add("grant_type", "refresh_token");
+				postparams.Add("refresh_token", _authorizationModel.RefreshToken);
+			}
+			else
+			{
+				postparams.Add("grant_type", "client_credentials");
+			}
+
 
 			var authHeader = Convert.ToBase64String(Encoding.Default.GetBytes($"{_clientId}:{_clientSecret}"));
 			webClient.Headers.Add(HttpRequestHeader.Authorization, "Basic " + authHeader);
@@ -66,7 +79,9 @@ namespace Musicus.Helpers
 
 			var textResponse = Encoding.UTF8.GetString(tokenResponse);
 
-			return JsonConvert.DeserializeObject<AuthorizationModel>(textResponse);
+			_authorizationModel = JsonConvert.DeserializeObject<AuthorizationModel>(textResponse);
+
+			return _authorizationModel;
 		}
 
 		public static bool Play(string spotifyUrl = "")
@@ -118,12 +133,12 @@ namespace Musicus.Helpers
 		{
 			var result = new List<ISearchResult>();
 
-			var searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Track);
+			var searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Track, 30, 0, "NL");
 			foreach (var t in searchItem.Tracks.Items)
 			{
 				result.Add(new SearchResult
 				{
-					Artist = t.Artists[0].Name,
+					Artist = t.Artists[0]?.Name,
 					Description = t.Name,
 					TrackId = t.Uri,
 					TrackLength = t.DurationMs,
@@ -133,21 +148,20 @@ namespace Musicus.Helpers
 				});
 			}
 
-			//searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Playlist);
-			//foreach (var p in searchItem.Playlists.Items)
-			//{
-			//	result.Add(new SearchResult
-			//	{
-			//		TrackId = p.Id,
-			//		Description = p.Name,
-			//		TrackCount = p.Tracks.Total,
-			//		Type = SearchResultType.Playlist,
-			//		Url = p.Uri,
-			//		TrackSource = TrackSource.Spotify
-			//	});
-			//}
-
 			return result;
+		}
+
+		private static void CheckRequest(BasicModel response, Action retryMethod)
+		{
+			if (!response.HasError()) return;
+
+			if (response.Error.Status == 401)
+			{
+				// Token expired, set to null so it wel be regenerated
+				_spotifyWebAPI = null;
+			}
+
+			retryMethod();
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
+using Musicus.Helpers;
 using Musicus.Models;
 
 namespace Musicus
@@ -11,20 +12,6 @@ namespace Musicus
 	public class Player
 	{
 		private readonly IEnumerable<IMusicService> _musicServices;
-		private static float? _currentVolume;
-		public static float CurrentVolume
-		{
-			get
-			{
-				if (_currentVolume == null)
-				{
-					// default value = 30
-					_currentVolume = 30;
-				}
-				return _currentVolume.Value;
-			}
-			set => _currentVolume = value;
-		}
 
 		public Player(IEnumerable<IMusicService> musicServices)
 		{
@@ -93,16 +80,9 @@ namespace Musicus
 			return searchResult;
 		}
 
-		public float GetVolume() => CurrentVolume;
+		public float GetVolume() => VolumeHelper.GetVolume();
 
-		public async Task SetVolumeAsync(VolumeFilter volumeFilter)
-		{
-			var musicService = _musicServices.GetMusicService(volumeFilter.TrackSource);
-
-			CurrentVolume = volumeFilter.Volume;
-
-			await musicService.SetVolumeAsync(volumeFilter.Volume);
-		}
+		public void SetVolume(VolumeFilter volumeFilter) => VolumeHelper.SetVolume(volumeFilter.Volume);
 	}
 
 	static class PlayerExtensions
