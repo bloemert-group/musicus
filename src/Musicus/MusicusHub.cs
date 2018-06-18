@@ -18,7 +18,7 @@ namespace Musicus
 		public override async Task OnConnectedAsync()
 		{
 			await _helper.StatusUpdateAsync();
-			_helper.SetVolume(_player.GetVolume());
+			_helper.SetVolume(VolumeHelper.GetVolume());
 
 			await base.OnConnectedAsync();
 		}

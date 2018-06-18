@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
-using Musicus.Helpers;
 using Musicus.Models;
 
 namespace Musicus
@@ -27,7 +26,7 @@ namespace Musicus
 
 			var musicService = _musicServices.GetMusicService(track.TrackSource);
 
-			return await musicService.PlayAsync(track.Url);
+			return await musicService.PlayAsync();
 		}
 
 		public async Task<bool> PlayNextTrackAsync()
@@ -53,6 +52,8 @@ namespace Musicus
 			var musicService = _musicServices.GetMusicService(currentTrack.TrackSource);
 
 			var status = await musicService.GetStatusAsync().ConfigureAwait(false);
+
+			if (status == null) return null;
 
 			// End of song, play next
 			if ((!currentTrack.IsPlaying && !status.IsPlaying) ||
@@ -80,9 +81,19 @@ namespace Musicus
 			return searchResult;
 		}
 
-		public float GetVolume() => VolumeHelper.GetVolume();
+		public Task<float> GetVolumeAsync(TrackSource trackSource)
+		{
+			var musicService = _musicServices.GetMusicService(trackSource);
 
-		public void SetVolume(VolumeFilter volumeFilter) => VolumeHelper.SetVolume(volumeFilter.Volume);
+			return musicService.GetVolumeAsync();
+		}
+
+		public void SetVolume(VolumeFilter volumeFilter)
+		{
+			var musicService = _musicServices.GetMusicService(volumeFilter.TrackSource);
+
+			musicService.SetVolumeAsync(volumeFilter.Volume);
+		}
 	}
 
 	static class PlayerExtensions

@@ -68,11 +68,10 @@ namespace Musicus.Helpers
 		public async Task StatusUpdateAsync()
 		{
 			var currentTrack = Playlist.GetCurrentTrack();
+			IMusicServiceStatus status;
 
-			if (currentTrack != null)
+			if (currentTrack != null && (status = await _player.GetStatusAsync(currentTrack)) != null)
 			{
-				var status = await _player.GetStatusAsync(currentTrack);
-
 				SetStatus(status);
 			}
 			else

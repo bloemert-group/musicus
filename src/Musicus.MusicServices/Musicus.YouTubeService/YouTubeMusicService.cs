@@ -1,43 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
+using Musicus.YouTubeService.Helpers;
 
 namespace YouTubeService
 {
 	public class YouTubeMusicService : IMusicService
 	{
+		public YouTubeMusicService(string apiKey)
+		{
+			YouTubeHelper.ApiKey = apiKey;
+		}
+
 		public TrackSource TrackSource => TrackSource.YouTube;
 
-		public Task<IMusicServiceStatus> GetStatusAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<IMusicServiceStatus> GetStatusAsync() => await Task.Run(() => YouTubeHelper.GetStatus());
 
-		public Task<bool> NextAsync(string url)
-		{
-			throw new NotImplementedException();
-		}
+		public Task<bool> NextAsync(string url) => PlayAsync(url);
 
-		public Task<bool> PauseAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<bool> PauseAsync() => await Task.Run(() => YouTubeHelper.Pause());
 
-		public Task<bool> PlayAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<bool> PlayAsync() => await Task.Run(() => YouTubeHelper.Play());
 
-		public Task<bool> PlayAsync(string url)
-		{
-			throw new NotImplementedException();
-		}
+		public Task<bool> PlayAsync(string url) => YouTubeHelper.PlayAsync(url);
 
-		public async Task<IList<ISearchResult>> SearchAsync(string keyword)
-		{
-			return new List<ISearchResult>();
-		}
+		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await YouTubeHelper.SearchAsync(keyword);
+
+		public async Task<bool> SetVolumeAsync(float volume) => await Task.Run(() => YouTubeHelper.SetVolume(volume));
+
+		public async Task<float> GetVolumeAsync() => await Task.Run(() => YouTubeHelper.GetVolume());
 	}
 }

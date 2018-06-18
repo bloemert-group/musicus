@@ -14,5 +14,7 @@ namespace Musicus.Abstractions.Services
 		Task<bool> NextAsync(string url);
 		Task<IList<ISearchResult>> SearchAsync(string keyword);
 		Task<IMusicServiceStatus> GetStatusAsync();
+		Task<bool> SetVolumeAsync(float volume);
+		Task<float> GetVolumeAsync();
 	}
 }

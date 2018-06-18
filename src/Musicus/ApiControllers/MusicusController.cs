@@ -63,7 +63,7 @@ namespace Musicus.ApiControllers
 		[Route("setvolume")]
 		public IActionResult SetVolume([FromBody] VolumeFilter volumeFilter)
 		{
-			_player.SetVolume(volumeFilter);
+			VolumeHelper.SetVolume(volumeFilter.Volume);
 
 			_signalRHelper.SetVolume(volumeFilter.Volume);
 
@@ -124,22 +124,24 @@ namespace Musicus.ApiControllers
 
 		[HttpPost]
 		[Route("playjingle")]
-		public IActionResult PlayJingle([FromBody] string filePath)
+		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
 		{
 			const int reduceVolume = 15;
-			var currentVolume = VolumeHelper.GetVolume();
+			var currentVolume = 50F;
 
 			var currentTrack = Playlist.GetCurrentTrack();
 			if (currentTrack != null)
 			{
-				SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume - reduceVolume });
+				currentVolume = await _player.GetVolumeAsync(currentTrack.TrackSource);
+
+				_player.SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume - reduceVolume });
 			}
 
 			JingleHelper.Play(filePath);
 
 			if (currentTrack != null)
 			{
-				SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume });
+				_player.SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = currentVolume });
 			}
 
 			return Ok();

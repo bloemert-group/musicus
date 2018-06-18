@@ -18,8 +18,8 @@ namespace Musicus.Helpers
 {
 	public class SpotifyHelper
 	{
-		private static string _clientId = "2f68bc04dcf14e118b3f5e8ffe3bdcd7";
-		private static string _clientSecret = "79b758453b114fcc96d402cbfc7969d0";
+		public static string ClientId { get; set; }
+		public static string ClientSecret { get; set; }
 
 		private static SpotifyLocalAPI _spotifyAPi;
 		private static SpotifyLocalAPI SpotifyAPI
@@ -72,7 +72,7 @@ namespace Musicus.Helpers
 			}
 
 
-			var authHeader = Convert.ToBase64String(Encoding.Default.GetBytes($"{_clientId}:{_clientSecret}"));
+			var authHeader = Convert.ToBase64String(Encoding.Default.GetBytes($"{ClientId}:{ClientSecret}"));
 			webClient.Headers.Add(HttpRequestHeader.Authorization, "Basic " + authHeader);
 
 			var tokenResponse = webClient.UploadValues("https://accounts.spotify.com/api/token", postparams);
@@ -133,7 +133,7 @@ namespace Musicus.Helpers
 		{
 			var result = new List<ISearchResult>();
 
-			var searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Track, 30, 0, "NL");
+			var searchItem = SpotifyWebAPI.SearchItems(keyword, SearchType.Track, 20, 0, "NL");
 			foreach (var t in searchItem.Tracks.Items)
 			{
 				result.Add(new SearchResult
