@@ -57,7 +57,8 @@ class SearchPanel extends React.Component {
 										tracklength={line.trackLength}
 										trackcount={line.trackCount}
 										url={line.url}
-										tracksource={line.trackSource}
+                    tracksource={line.trackSource}
+                    icon={line.icon}
 										onclick={this.addToQueue} />
                     )
                 }

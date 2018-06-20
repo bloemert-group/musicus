@@ -13,5 +13,6 @@
 		int TrackCount { get; set; }
 		string Url { get; set; }
 		TrackSource TrackSource { get; set; }
+		string Icon { get; set; }
 	}
 }
