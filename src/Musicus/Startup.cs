@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Musicus.Abstractions.Services;
 using Musicus.Helpers;
-using Musicus.Managers;
 using SpotifyService;
 using YouTubeService;
 
@@ -27,13 +26,13 @@ namespace Musicus
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<SignalRHelper>();
-			services.AddSingleton<PlayerManager>();
+			services.AddSingleton<Player>();
 
 			services.AddMvc();
 			services.AddSignalR();
 
-			services.AddTransient<IMusicService, SpotifyMusicService>();
-			services.AddTransient<IMusicService, YouTubeMusicService>();
+			services.AddTransient<IMusicService>(s => new SpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]));
+			services.AddTransient<IMusicService>(s => new YouTubeMusicService(Configuration["YouTubeApiKey"]));
 
 			return services.BuildServiceProvider();
 		}

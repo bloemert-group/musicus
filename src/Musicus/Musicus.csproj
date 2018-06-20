@@ -31,10 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MusicServices\SpotifyService\SpotifyService.csproj" />
-    <ProjectReference Include="..\MusicServices\YouTubeService\YouTubeService.csproj" />
+    <ProjectReference Include="..\ExternalLibs\CoreAudio\CoreAudio.csproj" />
     <ProjectReference Include="..\Musicus.Abstractions\Musicus.Abstractions.csproj" />
     <ProjectReference Include="..\Musicus.Models\Musicus.Models.csproj" />
+    <ProjectReference Include="..\Musicus.MusicServices\Musicus.SpotifyService\Musicus.SpotifyService.csproj" />
+    <ProjectReference Include="..\Musicus.MusicServices\Musicus.YouTubeService\Musicus.YouTubeService.csproj" />
   </ItemGroup>
 
 </Project>
