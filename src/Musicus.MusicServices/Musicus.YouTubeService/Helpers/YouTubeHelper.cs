@@ -53,6 +53,7 @@ namespace Musicus.YouTubeService.Helpers
 		private static void _vlcPlayer_EndReached(object sender, Vlc.DotNet.Core.VlcMediaPlayerEndReachedEventArgs e)
 		{
 			_currentStatus = null;
+			VlcPlayer.Stop();
 		}
 
 		private static IMusicServiceStatus _currentStatus;
