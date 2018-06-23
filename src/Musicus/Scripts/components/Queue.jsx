@@ -16,7 +16,7 @@ class Queue extends React.Component {
     return (
         <div className="body-queue-panel">
           <div className="body-queue-panel-header">
-            <i className="list icon"></i> Afspeellijst
+            <i className="list icon"></i> Playlist
           </div>
           <div className="body-queue-panel-content">
             {
