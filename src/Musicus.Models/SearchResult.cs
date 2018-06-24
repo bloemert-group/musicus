@@ -15,5 +15,6 @@ namespace Musicus.Models
 		public int TrackCount { get; set; }
 		public string Url { get; set; }
 		public TrackSource TrackSource { get; set; }
+		public string Icon { get; set; }
 	}
 }
