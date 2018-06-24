@@ -12,8 +12,6 @@ namespace Musicus.YouTubeService.Helpers
 {
 	public static class YouTubeHelper
 	{
-		public static string ApiKey { get; set; }
-
 		private static YoutubeClient _youtubeService;
 		public static YoutubeClient YouTubeService
 			=> _youtubeService ?? (_youtubeService = new YoutubeClient());

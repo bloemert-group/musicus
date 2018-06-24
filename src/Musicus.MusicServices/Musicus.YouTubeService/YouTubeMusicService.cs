@@ -8,11 +8,6 @@ namespace YouTubeService
 {
 	public class YouTubeMusicService : IMusicService
 	{
-		public YouTubeMusicService(string apiKey)
-		{
-			YouTubeHelper.ApiKey = apiKey;
-		}
-
 		public TrackSource TrackSource => TrackSource.YouTube;
 
 		public async Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()

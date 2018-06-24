@@ -33,7 +33,7 @@ namespace Musicus
 			services.AddSignalR();
 
 			services.AddTransient<IMusicService>(s => new SpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]));
-			services.AddTransient<IMusicService>(s => new YouTubeMusicService(Configuration["YouTubeApiKey"]));
+			services.AddTransient<IMusicService, YouTubeMusicService>();
 
 			return services.BuildServiceProvider();
 		}
