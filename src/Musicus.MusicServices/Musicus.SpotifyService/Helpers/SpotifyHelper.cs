@@ -159,7 +159,8 @@ namespace Musicus.Helpers
 					TrackLength = t.DurationMs,
 					Type = SearchResultType.Track,
 					Url = t.Uri,
-					TrackSource = TrackSource.Spotify
+					TrackSource = TrackSource.Spotify,
+					Icon = "spotify icon"
 				});
 			}
 

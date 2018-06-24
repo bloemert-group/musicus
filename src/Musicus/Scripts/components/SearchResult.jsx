@@ -32,18 +32,20 @@ class SearchResult extends React.Component {
 			var durationTrackCount = (<div className="search-list-item-tracks">
 				{playlistTracks}
 			</div>);
-		}
+    }
 
 		return (
-			<div className="search-list-item" onClick={this.click}>
+      <div className="search-list-item" onClick={this.click}>
+        <div className="search-list-item-tracksource">
+          <i className={this.props.icon}></i>
+        </div>
 				<div className="search-list-item-title">
 					{this.props.artist} - {this.props.description}
 				</div>
 				{durationTrackCount}
 				<div className="search-list-item-add">
 					<i className="plus icon"></i>
-				</div>
-
+        </div>
 				<Ink />
 			</div>)
 	}
@@ -58,11 +60,12 @@ SearchResult.propTypes = {
 	searchtype: PropTypes.number,
 	trackcount: PropTypes.number,
 	url: PropTypes.string,
-	tracksource: PropTypes.string
+  tracksource: PropTypes.string,
+  icon: PropTypes.string
 }
 
 function mapStateToProps(state) {
-	return {
+  return {    
 	}
 }
 

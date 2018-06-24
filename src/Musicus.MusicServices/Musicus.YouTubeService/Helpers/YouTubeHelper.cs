@@ -57,6 +57,7 @@ namespace Musicus.YouTubeService.Helpers
 					TrackLength = int.Parse(item.Duration.TotalMilliseconds.ToString()),
 					TrackId = item.Id,
 					Url = item.Id,
+					Icon = "youtube icon"
 				});
 			}
 
