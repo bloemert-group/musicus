@@ -8,10 +8,6 @@ class Modal extends React.Component {
 			return null;
 		}
 
-		var btnStyle = {
-			margin: "10px"
-		}
-
 		return (
 			<div className="overlay">
 				<div className="modal">
@@ -22,7 +18,7 @@ class Modal extends React.Component {
 							</div>
 						</div>
 						<div onClick={this.props.onClose}>
-							<i className='icon close' style={btnStyle}></i>
+							<i className='icon close'></i>
 						</div>
 					</div>
 					<div className="modal-content">
