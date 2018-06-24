@@ -32,11 +32,7 @@ namespace Musicus
 			services.AddMvc();
 			services.AddSignalR();
 
-			if (Configuration["SpotifyClientId"] != String.Empty && Configuration["SpotifyClientSecret"] != String.Empty)
-			{
-				services.AddTransient<IMusicService>(s => new SpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]));
-			}
-			services.AddTransient<IMusicService, YouTubeMusicService>();
+			SetMusicServices(services);
 
 			return services.BuildServiceProvider();
 		}
@@ -66,6 +62,17 @@ namespace Musicus
 
 			JingleHelper.JingleFilePath = Configuration[nameof(JingleHelper.JingleFilePath)];
 			Player.DefaultMusicServiceVolumeLevel = int.TryParse(Configuration[nameof(Player.DefaultMusicServiceVolumeLevel)], out var volume) ? volume : 30;
+		}
+
+		private void SetMusicServices(IServiceCollection services)
+		{
+			var spotifyClientId = Configuration["SpotifyClientId"];
+			var spotifyClientSecret = Configuration["SpotifyClientSecret"];
+			if (!string.IsNullOrEmpty(spotifyClientSecret) && !string.IsNullOrEmpty(spotifyClientSecret))
+			{
+				services.AddTransient<IMusicService>(s => new SpotifyMusicService(spotifyClientId, spotifyClientSecret));
+			}
+			services.AddTransient<IMusicService, YouTubeMusicService>();
 		}
 	}
 }
