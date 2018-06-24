@@ -84,7 +84,7 @@ namespace Musicus.Helpers
 			return _authorizationModel;
 		}
 
-		public static bool Play(string spotifyUrl = "")
+		public static IActionResult<object> Play(string spotifyUrl = "")
 		{
 			if (!string.IsNullOrEmpty(spotifyUrl))
 			{
@@ -95,19 +95,34 @@ namespace Musicus.Helpers
 				Task.Run(() => SpotifyAPI.Play());
 			}
 
-			return true;
+			return ActionResult<object>.Success(true);
 		}
-		public static void Pause() => Task.Run(() => SpotifyAPI.Pause());
+		public static IActionResult<object> Pause()
+		{
+			Task.Run(() => SpotifyAPI.Pause());
 
-		public static void Previous() => SpotifyAPI.Previous();
+			return ActionResult<object>.Success(true);
+		}
 
-		public static void Next(string url) => Play(url);
+		public static IActionResult<object> Previous()
+		{
+			SpotifyAPI.Previous();
 
-		public static float GetVolume() => SpotifyAPI.GetSpotifyVolume();
+			return ActionResult<object>.Success(true);
+		}
 
-		public static void SetVolume(float volume) => SpotifyAPI.SetSpotifyVolume(volume);
+		public static IActionResult<object> Next(string url) => Play(url);
 
-		public static IMusicServiceStatus GetStatus()
+		public static IActionResult<float> GetVolume() => ActionResult<float>.Success(SpotifyAPI.GetSpotifyVolume());
+
+		public static IActionResult<float> SetVolume(float volume)
+		{
+			SpotifyAPI.SetSpotifyVolume(volume);
+
+			return GetVolume();
+		}
+
+		public static IActionResult<IMusicServiceStatus> GetStatus()
 		{
 			var result = new MusicServiceStatus();
 
@@ -126,10 +141,10 @@ namespace Musicus.Helpers
 				}
 			}
 
-			return result;
+			return ActionResult<IMusicServiceStatus>.Success(result);
 		}
 
-		public static List<ISearchResult> Search(string keyword)
+		public static IActionResult<IList<ISearchResult>> Search(string keyword)
 		{
 			var result = new List<ISearchResult>();
 
@@ -148,7 +163,7 @@ namespace Musicus.Helpers
 				});
 			}
 
-			return result;
+			return ActionResult<IList<ISearchResult>>.Success(result);
 		}
 
 		private static void CheckRequest(BasicModel response, Action retryMethod)

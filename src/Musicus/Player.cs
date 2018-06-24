@@ -10,6 +10,8 @@ namespace Musicus
 {
 	public class Player
 	{
+		public static int DefaultMusicServiceVolumeLevel = 30;
+
 		private readonly IEnumerable<IMusicService> _musicServices;
 
 		public Player(IEnumerable<IMusicService> musicServices)
@@ -17,7 +19,7 @@ namespace Musicus
 			_musicServices = musicServices;
 		}
 
-		public async Task<bool> PlayAsync(Track track)
+		public async Task<(bool succeed, string errorMessage)> PlayAsync(Track track)
 		{
 			if (track == null || track.TrackSource == 0 || string.IsNullOrEmpty(track.Description))
 			{
@@ -26,34 +28,43 @@ namespace Musicus
 
 			var musicService = _musicServices.GetMusicService(track.TrackSource);
 
-			return await musicService.PlayAsync();
+			var result = await musicService.PlayAsync();
+
+			return (result.Succeed, result.ErrorMessage);
 		}
 
-		public async Task<bool> PlayNextTrackAsync()
+		public async Task<(bool succeed, string errorMessage)> PlayNextTrackAsync()
 		{
 			var nextTrack = Playlist.GetNextTrack();
 
-			if (nextTrack == null) return false;
+			if (nextTrack == null) return (false, "No next track in playlist");
+
+			_musicServices.PauseAll();
 
 			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
 
-			return await musicService.PlayAsync(nextTrack.Url);
+			var result = await musicService.PlayAsync(nextTrack.Url);
+
+			return (result.Succeed, result.ErrorMessage);
 		}
 
 		public async Task<bool> PauseTrackAsync(Track track)
 		{
 			var musicService = _musicServices.GetMusicService(track.TrackSource);
 
-			return await musicService.PauseAsync();
+			var result = await musicService.PauseAsync();
+
+			return result.Succeed;
 		}
 
 		public async Task<IMusicServiceStatus> GetStatusAsync(Track currentTrack)
 		{
 			var musicService = _musicServices.GetMusicService(currentTrack.TrackSource);
 
-			var status = await musicService.GetStatusAsync().ConfigureAwait(false);
+			var statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
 
-			if (status == null) return null;
+			if (statusResult == null || !statusResult.Succeed) return null;
+			var status = statusResult.Data;
 
 			// End of song, play next
 			if ((!currentTrack.IsPlaying && !status.IsPlaying) ||
@@ -62,7 +73,9 @@ namespace Musicus
 				await PlayNextTrackAsync();
 
 				// Fetch status again
-				return await musicService.GetStatusAsync().ConfigureAwait(false);
+				statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
+
+				return statusResult?.Data;
 			}
 			return status;
 		}
@@ -76,16 +89,18 @@ namespace Musicus
 			var searchResult = new List<ISearchResult>();
 			foreach (var tr in taskResult)
 			{
-				searchResult.AddRange(tr);
+				searchResult.AddRange(tr.Data);
 			}
 			return searchResult;
 		}
 
-		public Task<float> GetVolumeAsync(TrackSource trackSource)
+		public async Task<float> GetVolumeAsync(TrackSource trackSource)
 		{
 			var musicService = _musicServices.GetMusicService(trackSource);
 
-			return musicService.GetVolumeAsync();
+			var result = await musicService.GetVolumeAsync();
+
+			return result.Data;
 		}
 
 		public void SetVolume(VolumeFilter volumeFilter)
@@ -107,6 +122,14 @@ namespace Musicus
 				throw new ArgumentException(nameof(IMusicService), $"A MusicService with source {trackSource.ToString()} was requested but not implemented");
 			}
 			return musicService;
+		}
+
+		public static void PauseAll(this IEnumerable<IMusicService> musicServices)
+		{
+			foreach (var musicService in musicServices)
+			{
+				musicService.PauseAsync();
+			}
 		}
 	}
 }

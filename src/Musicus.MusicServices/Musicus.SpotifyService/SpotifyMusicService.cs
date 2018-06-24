@@ -16,35 +16,20 @@ namespace SpotifyService
 
 		public TrackSource TrackSource => TrackSource.Spotify;
 
-		public async Task<IMusicServiceStatus> GetStatusAsync() => await Task.Run(() => SpotifyHelper.GetStatus());
+		public Task<IActionResult<IMusicServiceStatus>> GetStatusAsync() => Task.Run(() => SpotifyHelper.GetStatus());
 
-		public async Task<bool> NextAsync(string url)
-		{
-			await Task.Run(() => SpotifyHelper.Next(url));
+		public Task<IActionResult<float>> GetVolumeAsync() => Task.Run(() => SpotifyHelper.GetVolume());
 
-			return true;
-		}
+		public Task<IActionResult<object>> NextAsync(string url) => Task.Run(() => SpotifyHelper.Next(url));
 
-		public async Task<bool> PauseAsync()
-		{
-			await Task.Run(() => SpotifyHelper.Pause());
+		public Task<IActionResult<object>> PauseAsync() => Task.Run(() => SpotifyHelper.Pause());
 
-			return true;
-		}
+		public Task<IActionResult<object>> PlayAsync() => Task.Run(() => SpotifyHelper.Play());
 
-		public async Task<bool> PlayAsync() => await Task.Run(() => SpotifyHelper.Play());
+		public Task<IActionResult<object>> PlayAsync(string url) => Task.Run(() => SpotifyHelper.Play(url));
 
-		public async Task<bool> PlayAsync(string url) => await Task.Run(() => SpotifyHelper.Play(url));
+		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword) => Task.Run(() => SpotifyHelper.Search(keyword));
 
-		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await Task.Run(() => SpotifyHelper.Search(keyword));
-
-		public async Task<bool> SetVolumeAsync(float volume)
-		{
-			await Task.Run(() => SpotifyHelper.SetVolume(volume));
-
-			return true;
-		}
-
-		public async Task<float> GetVolumeAsync() => await Task.Run(() => SpotifyHelper.GetVolume());
+		public Task<IActionResult<float>> SetVolumeAsync(float volume) => Task.Run(() => SpotifyHelper.SetVolume(volume));
 	}
 }

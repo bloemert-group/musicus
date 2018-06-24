@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -57,10 +58,11 @@ namespace Musicus
 
 			if (signalRHelper != null)
 			{
-				signalRHelper.StartStatusUpdate();
+				Task.Run(() => signalRHelper.StartStatusUpdate()).ConfigureAwait(false);
 			}
 
 			JingleHelper.JingleFilePath = Configuration[nameof(JingleHelper.JingleFilePath)];
+			Player.DefaultMusicServiceVolumeLevel = int.TryParse(Configuration[nameof(Player.DefaultMusicServiceVolumeLevel)], out var volume) ? volume : 30;
 		}
 	}
 }

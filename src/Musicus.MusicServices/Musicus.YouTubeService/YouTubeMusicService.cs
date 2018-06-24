@@ -15,20 +15,28 @@ namespace YouTubeService
 
 		public TrackSource TrackSource => TrackSource.YouTube;
 
-		public async Task<IMusicServiceStatus> GetStatusAsync() => await Task.Run(() => YouTubeHelper.GetStatus());
+		public async Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()
+			 => await Task.Run(() => YouTubeHelper.GetStatus());
 
-		public Task<bool> NextAsync(string url) => PlayAsync(url);
+		public async Task<IActionResult<float>> GetVolumeAsync()
+			 => await Task.Run(() => YouTubeHelper.GetVolume());
 
-		public async Task<bool> PauseAsync() => await Task.Run(() => YouTubeHelper.Pause());
+		public async Task<IActionResult<object>> NextAsync(string url)
+			 => await YouTubeHelper.PlayAsync(url);
 
-		public async Task<bool> PlayAsync() => await Task.Run(() => YouTubeHelper.Play());
+		public async Task<IActionResult<object>> PauseAsync()
+			=> await Task.Run(() => YouTubeHelper.Pause());
 
-		public Task<bool> PlayAsync(string url) => YouTubeHelper.PlayAsync(url);
+		public async Task<IActionResult<object>> PlayAsync()
+			=> await Task.Run(() => YouTubeHelper.Play());
 
-		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await YouTubeHelper.SearchAsync(keyword);
+		public async Task<IActionResult<object>> PlayAsync(string url)
+			 => await YouTubeHelper.PlayAsync(url);
 
-		public async Task<bool> SetVolumeAsync(float volume) => await Task.Run(() => YouTubeHelper.SetVolume(volume));
+		public async Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword)
+		 => await YouTubeHelper.SearchAsync(keyword);
 
-		public async Task<float> GetVolumeAsync() => await Task.Run(() => YouTubeHelper.GetVolume());
+		public async Task<IActionResult<float>> SetVolumeAsync(float volume)
+			=> await Task.Run(() => YouTubeHelper.SetVolume(volume));
 	}
 }
