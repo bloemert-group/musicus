@@ -18,7 +18,7 @@ export function setSpotifyFilter() {
 }
 
 function setSearchResultAction(searchResult) {
-	return {
+  return {
 		type: actionTypes.SET_SEARCHRESULT,
 		searchResult
 	}

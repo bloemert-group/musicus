@@ -38,4 +38,10 @@
     <ProjectReference Include="..\Musicus.MusicServices\Musicus.YouTubeService\Musicus.YouTubeService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

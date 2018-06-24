@@ -95,6 +95,7 @@ namespace Musicus.YouTubeService.Helpers
 					TrackLength = duration * 1000,
 					TrackId = item.Id.VideoId,
 					Url = item.Id.VideoId,
+					Icon = "youtube icon"
 				});
 			}
 
