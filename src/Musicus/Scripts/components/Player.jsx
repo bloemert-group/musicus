@@ -30,8 +30,8 @@ class Player extends React.Component {
 		this.props.next();
 	}
 
-	clickPlayJingle(filepath) {
-		this.props.playJingle(filepath);
+	clickPlayJingle(filePath) {
+		this.props.playJingle(filePath);
 	}
 
 	toggleJingleModal() {
@@ -68,7 +68,7 @@ class Player extends React.Component {
 					{
 						this.props.jingles.map(line =>
 							<Jingle
-								filepath={line.path}
+								filePath={line.filePath}
 								name={line.name}
 								onclick={this.clickPlayJingle} />
 						)

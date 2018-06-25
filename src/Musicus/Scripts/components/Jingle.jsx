@@ -14,7 +14,7 @@ class Jingle extends React.Component {
 
 	click(e) {
 		e.preventDefault();
-		this.props.onclick(this.props.filepath);
+		this.props.onclick(this.props.filePath);
 	}
 
 	render() {
@@ -33,7 +33,7 @@ class Jingle extends React.Component {
 }
 
 Jingle.propTypes = {
-	filepath: PropTypes.string,
+	filePath: PropTypes.string,
 	name: PropTypes.string,
 	
 }
