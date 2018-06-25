@@ -48,6 +48,49 @@ export function search(keyword) {
 	}
 }
 
+function setJinglesAction(jingles) {
+	return {
+		type: actionTypes.SET_JINGLES,
+		jingles
+	}
+}
+
+export function setJingles() {
+	return (dispatch, getState) => {
+		fetch(general.API_URL_GET_JINGLES, {
+			method: 'GET'
+		})
+			.then(response => response.json())
+			.then(json => {
+				dispatch(setJinglesAction(json));
+			})
+			.catch((e) => {
+				console.log(e);
+				console.log('error');
+			});
+	}
+}
+
+export function playJingle(filepath) {
+	return (dispatch) => {
+		fetch(general.API_URL_PLAY_JINGLE, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(filepath)
+		})
+			.then(response => response.json())
+			.then(json => {
+				console.log(json);
+			})
+			.catch((e) => {
+				console.log(e);
+				console.log('error');
+			});
+	}
+}
+
 export function addToQueue(trackid, artist, description, trackLength, url, source) {
 	return (dispatch) => {
 		const track = {

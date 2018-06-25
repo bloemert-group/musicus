@@ -4,7 +4,8 @@ const initMusicusState = {
 	searchFilter: {
     spotify: false
   },
-  searchResult: [],
+	searchResult: [],
+	jingles: [],
   currentTrack: {
     artist: '',
     track: '',
@@ -47,6 +48,10 @@ export const musicusReducer = function init(state = initMusicusState, action) {
 			return Object.assign({}, state, {
 				volume: action.volume
 			});
+		case types.SET_JINGLES:
+			return Object.assign({}, state, {
+				jingles: action.jingles
+			})
 		default:
 			return state;
 	}
