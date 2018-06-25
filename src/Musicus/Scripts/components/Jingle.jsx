@@ -20,13 +20,12 @@ class Jingle extends React.Component {
 	render() {
 		return (
 			<div className="jingle-item" onClick={this.click}>
+				<div className="jingle-item-add">
+					<i className="play icon"></i>
+				</div>
 				<div className="jingle-item-title">
 					{this.props.name}
 				</div>
-				<div className="jingle-item-add">
-					<i className="plus icon"></i>
-				</div>
-
 				<Ink />
 			</div>)
 	}
