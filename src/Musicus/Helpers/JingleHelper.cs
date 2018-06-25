@@ -22,7 +22,7 @@ namespace Musicus.Helpers
 
 			var files = dirInfo.GetFiles("*.*");
 
-			return files.Select(file => new Jingle { Name = file.Name, Path = file.FullName });
+			return files.Select(file => new Jingle { Name = file.Name, FilePath = file.FullName });
 		}
 
 		public static void Play(string filePath)
