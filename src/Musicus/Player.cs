@@ -63,12 +63,13 @@ namespace Musicus
 
 			var statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
 
-			if (statusResult == null || !statusResult.Succeed) return null;
-			var status = statusResult.Data;
+			var status = statusResult?.Data;
+
+			if ((status == null && Playlist.GetPlaylist(includingIsPlaying: false).Count == 0)) return null;
 
 			// End of song, play next
-			if ((!currentTrack.IsPlaying && !status.IsPlaying) ||
-					(currentTrack.Artist == status.Artist && currentTrack.Description == status.Track && status.IsPlaying && status.Current >= (status.Length - 2)))
+			if ((status == null) || (!currentTrack.IsPlaying && !status.IsPlaying) ||
+					(currentTrack.Artist == status.Artist && currentTrack.Description == status.Track && status.IsPlaying && status.Current >= (status.Length - 2.5)))
 			{
 				await PlayNextTrackAsync();
 

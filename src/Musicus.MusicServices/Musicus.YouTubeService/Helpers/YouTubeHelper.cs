@@ -101,6 +101,10 @@ namespace Musicus.YouTubeService.Helpers
 
 				return ActionResult<object>.Success(_currentStatus);
 			}
+			catch (YoutubeExplode.Exceptions.VideoUnavailableException vue)
+			{
+				return ActionResult<object>.Error(vue.Reason);
+			}
 			catch (Exception ex)
 			{
 				return ActionResult<object>.Error(ex.Message);

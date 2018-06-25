@@ -35,6 +35,10 @@ module.exports = {
 				]
 			},
 			{
+				test: /\.css$/,
+				loader: "style-loader!css-loader"
+			},
+			{
 				test: /\.svg$/,
 				use: {
 					loader: 'url-loader?limit=65000&mimetype=image/svg+xml&name=public/fonts/[name].[ext]'

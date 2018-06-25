@@ -54,6 +54,7 @@
     "react-redux": "^5.0.7",
     "react-router": "^3.0.5",
     "react-router-redux": "^4.0.8",
+    "react-toastify": "^4.1.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
     "semantic-ui-icon": "^2.3.1"

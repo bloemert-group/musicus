@@ -23,7 +23,7 @@ namespace Musicus.ApiControllers
 		{
 			var result = await _player.PlayAsync(track);
 
-			return Json(new { Succeed = result });
+			return Json(result);
 		}
 
 		[HttpPost]
@@ -32,7 +32,7 @@ namespace Musicus.ApiControllers
 		{
 			var result = await _player.PauseTrackAsync(track);
 
-			return Json(new { Succeed = result });
+			return Json(result);
 		}
 
 		[HttpGet]
@@ -56,7 +56,7 @@ namespace Musicus.ApiControllers
 		{
 			var result = await _player.PlayNextTrackAsync();
 
-			return Json(result);
+			return Json(new { result.succeed, result.errorMessage });
 		}
 
 		[HttpPost]
@@ -97,7 +97,11 @@ namespace Musicus.ApiControllers
 
 			if (Playlist.GetPlaylist().Count == 1)
 			{
-				await _player.PlayNextTrackAsync();
+				var result = await _player.PlayNextTrackAsync();
+				if (!result.succeed)
+				{
+					return Json(new { Succeed = result.succeed, ErrorMessage = result.errorMessage });
+				}
 			}
 
 			return GetPlaylist();
