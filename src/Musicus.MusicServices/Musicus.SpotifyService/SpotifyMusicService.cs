@@ -12,6 +12,19 @@ namespace SpotifyService
 		{
 			SpotifyHelper.ClientId = clientId;
 			SpotifyHelper.ClientSecret = clientSecret;
+
+			SpotifyHelper.SpotifyAPI.OnTrackTimeChange += (obj, args) =>
+			{
+				Task.Run(() =>
+				{
+					var status = SpotifyHelper.GetStatus();
+
+					if (status.Data.IsPlaying && (status.Data.Length - 2) <= args.TrackTime)
+					{
+						OnTrackEnded();
+					}
+				});
+			};
 		}
 
 		public TrackSource TrackSource => TrackSource.Spotify;
@@ -20,16 +33,22 @@ namespace SpotifyService
 
 		public Task<IActionResult<float>> GetVolumeAsync() => Task.Run(() => SpotifyHelper.GetVolume());
 
-		public Task<IActionResult<object>> NextAsync(string url) => Task.Run(() => SpotifyHelper.Next(url));
+		public Task<IActionResult<object>> NextAsync(string url) => SpotifyHelper.NextAsync(url);
 
-		public Task<IActionResult<object>> PauseAsync() => Task.Run(() => SpotifyHelper.Pause());
+		public Task<IActionResult<object>> PauseAsync() => SpotifyHelper.PauseAsync();
 
-		public Task<IActionResult<object>> PlayAsync() => Task.Run(() => SpotifyHelper.Play());
+		public Task<IActionResult<object>> PlayAsync() => SpotifyHelper.PlayAsync();
 
-		public Task<IActionResult<object>> PlayAsync(string url) => Task.Run(() => SpotifyHelper.Play(url));
+		public Task<IActionResult<object>> PlayAsync(string url) => SpotifyHelper.PlayAsync(url);
 
 		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword) => Task.Run(() => SpotifyHelper.Search(keyword));
 
 		public Task<IActionResult<float>> SetVolumeAsync(float volume) => Task.Run(() => SpotifyHelper.SetVolume(volume));
+
+		public event TrackEndHandler TrackEndedEvent;
+		public void OnTrackEnded()
+		{
+			TrackEndedEvent?.Invoke();
+		}
 	}
 }

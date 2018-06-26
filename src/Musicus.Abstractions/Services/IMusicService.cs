@@ -4,6 +4,8 @@ using Musicus.Abstractions.Models;
 
 namespace Musicus.Abstractions.Services
 {
+	public delegate void TrackEndHandler();
+
 	public interface IMusicService
 	{
 		TrackSource TrackSource { get; }
@@ -16,5 +18,8 @@ namespace Musicus.Abstractions.Services
 		Task<IActionResult<IMusicServiceStatus>> GetStatusAsync();
 		Task<IActionResult<float>> SetVolumeAsync(float volume);
 		Task<IActionResult<float>> GetVolumeAsync();
+
+		event TrackEndHandler TrackEndedEvent;
+		void OnTrackEnded();
 	}
 }

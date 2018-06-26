@@ -17,6 +17,24 @@ namespace Musicus
 		public Player(IEnumerable<IMusicService> musicServices)
 		{
 			_musicServices = musicServices;
+
+			SetEvents(musicServices);
+		}
+
+		private void SetEvents(IEnumerable<IMusicService> musicServices)
+		{
+			foreach (var ms in musicServices)
+			{
+				ms.TrackEndedEvent += OnTrackEnd;
+			}
+		}
+
+		private void OnTrackEnd()
+		{
+			if (Playlist.GetPlaylist(includingIsPlaying: false).Count > 0)
+			{
+				Task.Run(() => PlayNextTrackAsync());
+			}
 		}
 
 		public async Task<(bool succeed, string errorMessage)> PlayAsync(Track track)
@@ -39,7 +57,7 @@ namespace Musicus
 
 			if (nextTrack == null) return (false, "No next track in playlist");
 
-			_musicServices.PauseAll();
+			await _musicServices.PauseAll();
 
 			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
 
@@ -59,26 +77,21 @@ namespace Musicus
 
 		public async Task<IMusicServiceStatus> GetStatusAsync(Track currentTrack)
 		{
-			var musicService = _musicServices.GetMusicService(currentTrack.TrackSource);
-
-			var statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
-
-			var status = statusResult?.Data;
-
-			if ((status == null && Playlist.GetPlaylist(includingIsPlaying: false).Count == 0)) return null;
-
-			// End of song, play next
-			if ((status == null) || (!currentTrack.IsPlaying && !status.IsPlaying) ||
-					(currentTrack.Artist == status.Artist && currentTrack.Description == status.Track && status.IsPlaying && status.Current >= (status.Length - 2.5)))
+			try
 			{
-				await PlayNextTrackAsync();
+				var musicService = _musicServices.GetMusicService(currentTrack.TrackSource);
 
-				// Fetch status again
-				statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
+				var statusResult = await musicService.GetStatusAsync().ConfigureAwait(false);
 
-				return statusResult?.Data;
+				var status = statusResult?.Data;
+
+				return status;
 			}
-			return status;
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return null;
+			}
 		}
 
 		public async Task<IList<ISearchResult>> SearchAsync(SearchFilter filter)
@@ -125,12 +138,11 @@ namespace Musicus
 			return musicService;
 		}
 
-		public static void PauseAll(this IEnumerable<IMusicService> musicServices)
+		public static async Task PauseAll(this IEnumerable<IMusicService> musicServices)
 		{
-			foreach (var musicService in musicServices)
-			{
-				musicService.PauseAsync();
-			}
+			var pauseTasks = musicServices.Select(ms => ms.PauseAsync());
+
+			await Task.WhenAll(pauseTasks);
 		}
 	}
 }

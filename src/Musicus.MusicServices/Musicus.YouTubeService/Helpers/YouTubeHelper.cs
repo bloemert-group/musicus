@@ -26,17 +26,11 @@ namespace Musicus.YouTubeService.Helpers
 					var libDirectory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
 
 					_vlcPlayer = new Vlc.DotNet.Core.VlcMediaPlayer(libDirectory);
-					_vlcPlayer.EndReached += _vlcPlayer_EndReached;
 				}
 				return _vlcPlayer;
 			}
 		}
 
-		private static void _vlcPlayer_EndReached(object sender, Vlc.DotNet.Core.VlcMediaPlayerEndReachedEventArgs e)
-		{
-			_currentStatus = null;
-			VlcPlayer.Stop();
-		}
 
 		private static IMusicServiceStatus _currentStatus;
 
@@ -113,7 +107,15 @@ namespace Musicus.YouTubeService.Helpers
 
 		public static IActionResult<object> Pause()
 		{
-			VlcPlayer.Pause();
+			try
+			{
+				VlcPlayer.Pause();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
 
 			return ActionResult<object>.Success(_currentStatus);
 		}

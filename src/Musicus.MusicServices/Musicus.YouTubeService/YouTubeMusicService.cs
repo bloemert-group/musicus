@@ -8,6 +8,14 @@ namespace YouTubeService
 {
 	public class YouTubeMusicService : IMusicService
 	{
+		public YouTubeMusicService()
+		{
+			YouTubeHelper.VlcPlayer.EndReached += (obj, args) =>
+			{
+				this.OnTrackEnded();
+			};
+		}
+
 		public TrackSource TrackSource => TrackSource.YouTube;
 
 		public async Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()
@@ -33,5 +41,11 @@ namespace YouTubeService
 
 		public async Task<IActionResult<float>> SetVolumeAsync(float volume)
 			=> await Task.Run(() => YouTubeHelper.SetVolume(volume));
+
+		public event TrackEndHandler TrackEndedEvent;
+		public void OnTrackEnded()
+		{
+			TrackEndedEvent?.Invoke();
+		}
 	}
 }

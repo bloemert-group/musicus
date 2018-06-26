@@ -22,7 +22,7 @@ namespace Musicus.Helpers
 		public static string ClientSecret { get; set; }
 
 		private static SpotifyLocalAPI _spotifyAPi;
-		private static SpotifyLocalAPI SpotifyAPI
+		public static SpotifyLocalAPI SpotifyAPI
 		{
 			get
 			{
@@ -30,6 +30,7 @@ namespace Musicus.Helpers
 				{
 					_spotifyAPi = new SpotifyLocalAPI();
 					_spotifyAPi.Connect();
+					_spotifyAPi.ListenForEvents = true;
 				}
 				return _spotifyAPi;
 			}
@@ -84,22 +85,34 @@ namespace Musicus.Helpers
 			return _authorizationModel;
 		}
 
-		public static IActionResult<object> Play(string spotifyUrl = "")
+		public async static Task<IActionResult<object>> PlayAsync(string spotifyUrl = "")
 		{
 			if (!string.IsNullOrEmpty(spotifyUrl))
 			{
-				Task.Run(() => SpotifyAPI.PlayURL(spotifyUrl));
+				await SpotifyAPI.PlayURL(spotifyUrl).ConfigureAwait(false);
 			}
 			else
 			{
-				Task.Run(() => SpotifyAPI.Play());
+				await SpotifyAPI.Play().ConfigureAwait(false);
 			}
 
 			return ActionResult<object>.Success(true);
 		}
-		public static IActionResult<object> Pause()
+		public async static Task<IActionResult<object>> PauseAsync()
 		{
-			Task.Run(() => SpotifyAPI.Pause());
+			try
+			{
+				var status = SpotifyAPI.GetStatus();
+
+				if (status.Playing)
+				{
+					await SpotifyAPI.Pause();
+				}
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
 
 			return ActionResult<object>.Success(true);
 		}
@@ -111,7 +124,7 @@ namespace Musicus.Helpers
 			return ActionResult<object>.Success(true);
 		}
 
-		public static IActionResult<object> Next(string url) => Play(url);
+		public static Task<IActionResult<object>> NextAsync(string url) => PlayAsync(url);
 
 		public static IActionResult<float> GetVolume() => ActionResult<float>.Success(SpotifyAPI.GetSpotifyVolume());
 
