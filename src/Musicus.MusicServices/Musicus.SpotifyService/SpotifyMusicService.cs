@@ -15,15 +15,12 @@ namespace SpotifyService
 
 			SpotifyHelper.SpotifyAPI.OnTrackTimeChange += (obj, args) =>
 			{
-				Task.Run(() =>
-				{
-					var status = SpotifyHelper.GetStatus();
+				var status = SpotifyHelper.GetStatus();
 
-					if (status.Data.IsPlaying && (status.Data.Length - 2) <= args.TrackTime)
-					{
-						OnTrackEnded();
-					}
-				});
+				if (status.Data.Length > 0 && (args.TrackTime == 0 || (status.Data.Length - 0.2) <= args.TrackTime))
+				{
+					OnTrackEnded();
+				}
 			};
 		}
 
