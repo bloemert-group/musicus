@@ -48,6 +48,9 @@ namespace Musicus.Helpers
 		public void SetPlaylist(IList<Track> playlist)
 			=> _hubContext.Clients.All.SendAsync("SetQueue", playlist);
 
+		public void ShowError(string errorMessage)
+			=> _hubContext.Clients.All.SendAsync("ShowError", errorMessage);
+
 		public async Task StartStatusUpdate()
 		{
 			while (true)

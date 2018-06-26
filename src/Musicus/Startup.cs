@@ -57,6 +57,8 @@ namespace Musicus
 			if (signalRHelper != null)
 			{
 				Task.Run(() => signalRHelper.StartStatusUpdate()).ConfigureAwait(false);
+
+				Player.ExceptionHandler = signalRHelper.ShowError;
 			}
 
 			JingleHelper.JingleFilePath = Configuration[nameof(JingleHelper.JingleFilePath)];

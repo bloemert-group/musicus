@@ -12,6 +12,9 @@ namespace Musicus
 	public class Player
 	{
 		public static int DefaultMusicServiceVolumeLevel = 30;
+		// TODO: this should be done differently 
+		// If it works, it ain't stupid
+		public static Action<string> ExceptionHandler;
 
 		private readonly IEnumerable<IMusicService> _musicServices;
 
@@ -34,10 +37,21 @@ namespace Musicus
 
 		private void OnTrackEnd()
 		{
-			if (Playlist.GetPlaylist(includingIsPlaying: false).Count > 0)
+			Task.Run(async () =>
 			{
-				Task.Run(() => PlayNextTrackAsync());
-			}
+				bool succeed = false;
+				string errorMessage;
+				// When the next song cannot be played, the next song in queue is played
+				// The users will be notified that the song couldn't be played
+				while (!succeed && Playlist.GetPlaylist(includingIsPlaying: false).Count > 0)
+				{
+					(succeed, errorMessage) = await PlayNextTrackAsync();
+					if (!succeed)
+					{
+						ExceptionHandler?.Invoke(errorMessage);
+					}
+				}
+			});
 		}
 
 		public async Task<(bool succeed, string errorMessage)> PlayAsync(Track track)

@@ -206,6 +206,12 @@ export function setQueue(queue) {
 	}
 }
 
+export function showError(errorMessage) {
+	return dispatch => {
+		dispatch(toast.error(errorMessage));
+	}
+}
+
 function setTrackInfo(trackInfo) {
 	return {
 		type: actionTypes.SET_CURRENTTRACK,
