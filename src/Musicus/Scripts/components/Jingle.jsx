@@ -14,26 +14,25 @@ class Jingle extends React.Component {
 
 	click(e) {
 		e.preventDefault();
-		this.props.onclick(this.props.filepath);
+		this.props.onclick(this.props.filePath);
 	}
 
 	render() {
 		return (
 			<div className="jingle-item" onClick={this.click}>
+				<div className="jingle-item-add">
+					<i className="play icon"></i>
+				</div>
 				<div className="jingle-item-title">
 					{this.props.name}
 				</div>
-				<div className="jingle-item-add">
-					<i className="plus icon"></i>
-				</div>
-
 				<Ink />
 			</div>)
 	}
 }
 
 Jingle.propTypes = {
-	filepath: PropTypes.string,
+	filePath: PropTypes.string,
 	name: PropTypes.string,
 	
 }

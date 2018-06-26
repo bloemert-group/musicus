@@ -71,14 +71,14 @@ export function setJingles() {
 	}
 }
 
-export function playJingle(filepath) {
+export function playJingle(filePath) {
 	return (dispatch) => {
 		fetch(general.API_URL_PLAY_JINGLE, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(filepath)
+			body: JSON.stringify(filePath)
 		})
 			.then(response => response.json())
 			.then(json => {
