@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
+using Musicus.Helpers;
 using Musicus.Models;
 
 namespace Musicus
@@ -19,6 +20,8 @@ namespace Musicus
 			_musicServices = musicServices;
 
 			SetEvents(musicServices);
+
+			VolumeHelper.InitVolume(musicServices, DefaultMusicServiceVolumeLevel);
 		}
 
 		private void SetEvents(IEnumerable<IMusicService> musicServices)
