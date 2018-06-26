@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Musicus.Abstractions.Services;
 using Musicus.Helpers;
-using SpotifyService;
-using YouTubeService;
+using Musicus.SpotifyService;
+using Musicus.YouTubeService;
 
 namespace Musicus
 {
@@ -66,13 +65,8 @@ namespace Musicus
 
 		private void SetMusicServices(IServiceCollection services)
 		{
-			var spotifyClientId = Configuration["SpotifyClientId"];
-			var spotifyClientSecret = Configuration["SpotifyClientSecret"];
-			if (!string.IsNullOrEmpty(spotifyClientSecret) && !string.IsNullOrEmpty(spotifyClientSecret))
-			{
-				services.AddTransient<IMusicService>(s => new SpotifyMusicService(spotifyClientId, spotifyClientSecret));
-			}
-			services.AddTransient<IMusicService, YouTubeMusicService>();
+			services.AddSpotifyMusicService(Configuration);
+			services.AddYouTubeMusicService(Configuration);
 		}
 	}
 }
