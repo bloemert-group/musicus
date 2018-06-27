@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 
 namespace Musicus.Abstractions.Services
 {
-	public delegate void TrackEndHandler();
-
 	public interface IMusicService
 	{
 		TrackSource TrackSource { get; }
@@ -19,7 +18,6 @@ namespace Musicus.Abstractions.Services
 		Task<IActionResult<float>> SetVolumeAsync(float volume);
 		Task<IActionResult<float>> GetVolumeAsync();
 
-		event TrackEndHandler TrackEndedEvent;
-		void OnTrackEnded();
+		event Action OnTrackEnd;
 	}
 }

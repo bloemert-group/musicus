@@ -29,9 +29,9 @@ namespace Musicus
 
 		private void SetEvents(IEnumerable<IMusicService> musicServices)
 		{
-			foreach (var ms in musicServices)
+			foreach (var musicService in musicServices)
 			{
-				ms.TrackEndedEvent += OnTrackEnd;
+				musicService.OnTrackEnd += OnTrackEnd;
 			}
 		}
 

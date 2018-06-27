@@ -67,8 +67,8 @@ namespace Musicus
 
 		private void SetMusicServices(IServiceCollection services)
 		{
-			services.AddSpotifyMusicService(Configuration);
-			services.AddYouTubeMusicService(Configuration);
+			services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
+			services.AddYouTubeMusicService();
 		}
 	}
 }

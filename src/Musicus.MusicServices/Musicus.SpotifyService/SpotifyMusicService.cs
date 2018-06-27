@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
@@ -19,16 +20,26 @@ namespace SpotifyService
 
 				if (status.Data.Length > 0 && (args.TrackTime == 0 || (status.Data.Length - 0.2) <= args.TrackTime))
 				{
-					OnTrackEnded();
+					OnTrackEnd?.Invoke();
 				}
 			};
 		}
 
 		public TrackSource TrackSource => TrackSource.Spotify;
 
-		public Task<IActionResult<IMusicServiceStatus>> GetStatusAsync() => Task.Run(() => SpotifyHelper.GetStatus());
+		public Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()
+		{
+			var result = SpotifyHelper.GetStatus();
 
-		public Task<IActionResult<float>> GetVolumeAsync() => Task.Run(() => SpotifyHelper.GetVolume());
+			return Task.FromResult(result);
+		}
+
+		public Task<IActionResult<float>> GetVolumeAsync()
+		{
+			var result = SpotifyHelper.GetVolume();
+
+			return Task.FromResult(result);
+		}
 
 		public Task<IActionResult<object>> NextAsync(string url) => SpotifyHelper.NextAsync(url);
 
@@ -38,14 +49,20 @@ namespace SpotifyService
 
 		public Task<IActionResult<object>> PlayAsync(string url) => SpotifyHelper.PlayAsync(url);
 
-		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword) => Task.Run(() => SpotifyHelper.Search(keyword));
-
-		public Task<IActionResult<float>> SetVolumeAsync(float volume) => Task.Run(() => SpotifyHelper.SetVolume(volume));
-
-		public event TrackEndHandler TrackEndedEvent;
-		public void OnTrackEnded()
+		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword)
 		{
-			TrackEndedEvent?.Invoke();
+			var result = SpotifyHelper.Search(keyword);
+
+			return Task.FromResult(result);
 		}
+
+		public Task<IActionResult<float>> SetVolumeAsync(float volume)
+		{
+			var result = SpotifyHelper.SetVolume(volume);
+
+			return Task.FromResult(result);
+		}
+
+		public event Action OnTrackEnd;
 	}
 }
