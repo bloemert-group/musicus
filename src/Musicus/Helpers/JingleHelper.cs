@@ -30,7 +30,7 @@ namespace Musicus.Helpers
 			var libDirectory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
 
 			var mediaPlayer = new Vlc.DotNet.Core.VlcMediaPlayer(libDirectory);
-			mediaPlayer.Audio.Volume = 100;
+			mediaPlayer.Audio.Volume = 75;
 			mediaPlayer.SetMedia(new FileInfo(filePath));
 
 			bool playFinished = false;

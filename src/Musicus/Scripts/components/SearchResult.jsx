@@ -32,7 +32,15 @@ class SearchResult extends React.Component {
 			var durationTrackCount = (<div className="search-list-item-tracks">
 				{playlistTracks}
 			</div>);
-    }
+		}
+
+		var lineDescription = this.props.artist;
+		if (lineDescription === null || lineDescription === "") {
+			lineDescription = this.props.description;
+		}
+		else if (this.props.description !== null && this.props.description !== "") {
+			lineDescription += ' - ' + this.props.description;
+		}
 
 		return (
       <div className="search-list-item" onClick={this.click}>
@@ -40,7 +48,7 @@ class SearchResult extends React.Component {
           <i className={this.props.icon}></i>
         </div>
 				<div className="search-list-item-title">
-					{this.props.artist} - {this.props.description}
+					{lineDescription}
 				</div>
 				{durationTrackCount}
 				<div className="search-list-item-add">

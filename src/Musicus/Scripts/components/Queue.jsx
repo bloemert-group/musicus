@@ -5,9 +5,18 @@ import QueueItem from './QueueItem.jsx';
 class Queue extends React.Component {
   render() {
 		var queuelist = [];
-    for (var i = 0; i < this.props.queue.length; i++) {
+		for (var i = 0; i < this.props.queue.length; i++) {
+
+			var lineDescription = this.props.queue[i].artist;
+			if (lineDescription === null || lineDescription === "") {
+				lineDescription = this.props.queue[i].description;
+			}
+			else if (this.props.queue[i].description !== null && this.props.queue[i].description !== "") {
+				lineDescription += ' - ' + this.props.queue[i].description;
+			}
+
       queuelist.push({
-        Description: this.props.queue[i].artist + ' - ' + this.props.queue[i].description,
+				Description: lineDescription,
         TrackLength: this.props.queue[i].trackLength,
         QueueId: i
       });

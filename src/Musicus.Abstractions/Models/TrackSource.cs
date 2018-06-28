@@ -3,6 +3,7 @@
 	public enum TrackSource
 	{
 		Spotify = 1,
-		YouTube = 2
+		YouTube = 2,
+		FileSystem = 3
 	}
 }

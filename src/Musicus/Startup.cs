@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Musicus.FileSystemService;
 using Musicus.Helpers;
 using Musicus.SpotifyService;
 using Musicus.YouTubeService;
@@ -69,6 +70,7 @@ namespace Musicus
 		{
 			services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
 			services.AddYouTubeMusicService();
+			services.AddFileSystemMusicService(Configuration["FileSystemMusicServiceFilePath"]);
 		}
 	}
 }
