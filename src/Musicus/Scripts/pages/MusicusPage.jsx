@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
 import Ink from 'react-ink';
 import { next, play, pause } from '../actions/generalActions.jsx'
 import Header from '../components/Header.jsx'
 import SearchPanel from '../components/SearchPanel.jsx'
 import Queue from '../components/Queue.jsx'
+import 'react-toastify/dist/ReactToastify.css';
 
 class OverviewPage extends React.Component {
   render() {
@@ -14,7 +16,8 @@ class OverviewPage extends React.Component {
 				<div className="body-wrapper">
 					<SearchPanel />
 					<Queue />
-        </div>
+				</div>
+				<ToastContainer />
       </div>
     )
   }

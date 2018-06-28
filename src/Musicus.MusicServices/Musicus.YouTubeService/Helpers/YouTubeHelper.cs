@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Services;
 using Musicus.Abstractions.Models;
 using Musicus.Models;
 using YoutubeExplode;
@@ -14,25 +12,9 @@ namespace Musicus.YouTubeService.Helpers
 {
 	public static class YouTubeHelper
 	{
-		public static string ApiKey { get; set; }
-
-		private static Google.Apis.YouTube.v3.YouTubeService _youtubeService;
-		public static Google.Apis.YouTube.v3.YouTubeService YouTubeService
-		{
-			get
-			{
-
-				if (_youtubeService == null)
-				{
-					_youtubeService = new Google.Apis.YouTube.v3.YouTubeService(new BaseClientService.Initializer()
-					{
-						ApiKey = ApiKey,
-						ApplicationName = "Musicus.YouTubeService"
-					});
-				}
-				return _youtubeService;
-			}
-		}
+		private static YoutubeClient _youtubeService;
+		public static YoutubeClient YouTubeService
+			=> _youtubeService ?? (_youtubeService = new YoutubeClient());
 
 		private static Vlc.DotNet.Core.VlcMediaPlayer _vlcPlayer;
 		public static Vlc.DotNet.Core.VlcMediaPlayer VlcPlayer
@@ -44,95 +26,63 @@ namespace Musicus.YouTubeService.Helpers
 					var libDirectory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
 
 					_vlcPlayer = new Vlc.DotNet.Core.VlcMediaPlayer(libDirectory);
-					_vlcPlayer.EndReached += _vlcPlayer_EndReached;
 				}
 				return _vlcPlayer;
 			}
 		}
 
-		private static void _vlcPlayer_EndReached(object sender, Vlc.DotNet.Core.VlcMediaPlayerEndReachedEventArgs e)
-		{
-			_currentStatus = null;
-			VlcPlayer.Stop();
-		}
 
 		private static IMusicServiceStatus _currentStatus;
 
-		public static async Task<IList<ISearchResult>> SearchAsync(string keyword)
+		public static async Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword)
 		{
-			var request = YouTubeService.Search.List("snippet");
-			request.MaxResults = 20;
-			request.Type = "video";
-			request.Q = keyword;
+			var searchResult = await YouTubeService.SearchVideosAsync(keyword, 1);
 			var result = new List<ISearchResult>();
 
-			var searchResult = await request.ExecuteAsync();
 
-			foreach (var item in searchResult.Items)
+			foreach (var item in searchResult)
 			{
-				var videoDetailRequest = YouTubeService.Videos.List("contentDetails");
-				videoDetailRequest.Id = item.Id.VideoId;
-
-				var videoContentDetail = await videoDetailRequest.ExecuteAsync();
-
-				var reg = new Regex("([0-9]*)M([0-9]*)S$");
-				var regMatch = reg.Match(videoContentDetail.Items[0]?.ContentDetails.Duration);
-
-				var duration = 0;
-				if (regMatch != null && regMatch.Groups.Count > 2)
-				{
-					var minutes = int.Parse(regMatch.Groups[1].Value);
-					var seconds = int.Parse(regMatch.Groups[2].Value);
-					duration = (minutes * 60) + seconds;
-				}
-
 				result.Add(new SearchResult
 				{
-					Artist = item.Snippet.Title,
+					Artist = item.Title,
 					Description = string.Empty,
 					Type = SearchResultType.Track,
 					TrackSource = TrackSource.YouTube,
-					TrackLength = duration * 1000,
-					TrackId = item.Id.VideoId,
-					Url = item.Id.VideoId,
+					TrackLength = int.Parse(item.Duration.TotalMilliseconds.ToString()),
+					TrackId = item.Id,
+					Url = item.Id,
 					Icon = "youtube icon"
 				});
 			}
 
-			return result;
+			return ActionResult<IList<ISearchResult>>.Success(result);
 		}
 
-		public static bool Play()
+		public static IActionResult<object> Play()
 		{
 			if (VlcPlayer.GetMedia() != null)
 			{
 				VlcPlayer.Play();
-				return true;
+				return ActionResult<object>.Success(_currentStatus);
 			}
-			return false;
+			return ActionResult<object>.Error("Unable to play");
 		}
 
-		public static async Task<bool> PlayAsync(string url)
+		public static async Task<IActionResult<object>> PlayAsync(string url)
 		{
 			try
 			{
-				var yt = new YoutubeClient();
-
-				var video = await yt.GetVideoMediaStreamInfosAsync(url);
+				var video = await YouTubeService.GetVideoMediaStreamInfosAsync(url);
 				var audio = video.Audio.WithHighestBitrate();
 
 				var t = new Thread(async () =>
 				{
-					var videoDetailRequest = YouTubeService.Videos.List("snippet");
-					videoDetailRequest.Id = url;
-
-					var videoContentDetail = await videoDetailRequest.ExecuteAsync();
-					var track = videoContentDetail.Items[0];
+					var videoDetails = await YouTubeService.GetVideoAsync(url);
 
 					_currentStatus = new MusicServiceStatus
 					{
-						Track = track.Snippet.Title,
-						AlbumArtWork = track.Snippet.Thumbnails.Standard.Url,
+						Track = videoDetails?.Title,
+						AlbumArtWork = videoDetails?.Thumbnails?.LowResUrl,
 						TrackSource = TrackSource.YouTube,
 						Artist = string.Empty
 					};
@@ -143,23 +93,34 @@ namespace Musicus.YouTubeService.Helpers
 
 				VlcPlayer.Play();
 
-				return true;
+				return ActionResult<object>.Success(_currentStatus);
+			}
+			catch (YoutubeExplode.Exceptions.VideoUnavailableException vue)
+			{
+				return ActionResult<object>.Error(vue.Reason);
 			}
 			catch (Exception ex)
 			{
-
-				throw;
+				return ActionResult<object>.Error(ex.Message);
 			}
 		}
 
-		public static bool Pause()
+		public static IActionResult<object> Pause()
 		{
-			VlcPlayer.Pause();
+			try
+			{
+				VlcPlayer.Pause();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
 
-			return true;
+
+			return ActionResult<object>.Success(_currentStatus);
 		}
 
-		public static IMusicServiceStatus GetStatus()
+		public static IActionResult<IMusicServiceStatus> GetStatus()
 		{
 			if (_currentStatus == null) return null;
 
@@ -167,16 +128,16 @@ namespace Musicus.YouTubeService.Helpers
 			_currentStatus.Current = VlcPlayer.Time / 1000;
 			_currentStatus.Length = VlcPlayer.Length / 1000;
 
-			return _currentStatus;
+			return ActionResult<IMusicServiceStatus>.Success(_currentStatus);
 		}
 
-		public static float GetVolume() => VlcPlayer.Audio.Volume;
+		public static IActionResult<float> GetVolume() => ActionResult<float>.Success(VlcPlayer.Audio.Volume);
 
-		public static bool SetVolume(float volume)
+		public static IActionResult<float> SetVolume(float volume)
 		{
 			VlcPlayer.Audio.Volume = (int)volume;
 
-			return true;
+			return ActionResult<float>.Success(VlcPlayer.Audio.Volume);
 		}
 	}
 }

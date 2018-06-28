@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Scripts\index.js" />
     <Content Include="Scripts\reducers\musicus.jsx" />
   </ItemGroup>
 

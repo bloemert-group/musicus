@@ -19,14 +19,21 @@ namespace Musicus.Models
 			return playlist.TryAdd(index, item);
 		}
 
-		public static IList<Track> GetPlaylist(bool includingPlayed = false)
+		public static IList<Track> GetPlaylist(bool includingPlayed = false, bool includingIsPlaying = true)
 		{
-			if (includingPlayed)
+			var result = new List<Track>();
+			result.AddRange(Playlist.Instance.Items.Values.ToList());
+
+			if (!includingPlayed)
 			{
-				return Playlist.Instance.Items.Values.ToList();
+				result.RemoveAll(tr => tr.Played);
+			}
+			if (!includingIsPlaying)
+			{
+				result.RemoveAll(tr => tr.IsPlaying);
 			}
 
-			return Playlist.Instance.Items.Values.Where(track => !track.Played).ToList();
+			return result;
 		}
 
 		public static Track GetNextTrack()

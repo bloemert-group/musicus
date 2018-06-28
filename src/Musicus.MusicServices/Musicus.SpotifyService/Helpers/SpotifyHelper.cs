@@ -22,7 +22,7 @@ namespace Musicus.Helpers
 		public static string ClientSecret { get; set; }
 
 		private static SpotifyLocalAPI _spotifyAPi;
-		private static SpotifyLocalAPI SpotifyAPI
+		public static SpotifyLocalAPI SpotifyAPI
 		{
 			get
 			{
@@ -30,6 +30,7 @@ namespace Musicus.Helpers
 				{
 					_spotifyAPi = new SpotifyLocalAPI();
 					_spotifyAPi.Connect();
+					_spotifyAPi.ListenForEvents = true;
 				}
 				return _spotifyAPi;
 			}
@@ -84,30 +85,57 @@ namespace Musicus.Helpers
 			return _authorizationModel;
 		}
 
-		public static bool Play(string spotifyUrl = "")
+		public async static Task<IActionResult<object>> PlayAsync(string spotifyUrl = "")
 		{
 			if (!string.IsNullOrEmpty(spotifyUrl))
 			{
-				Task.Run(() => SpotifyAPI.PlayURL(spotifyUrl));
+				await SpotifyAPI.PlayURL(spotifyUrl).ConfigureAwait(false);
 			}
 			else
 			{
-				Task.Run(() => SpotifyAPI.Play());
+				await SpotifyAPI.Play().ConfigureAwait(false);
 			}
 
-			return true;
+			return ActionResult<object>.Success(true);
 		}
-		public static void Pause() => Task.Run(() => SpotifyAPI.Pause());
+		public async static Task<IActionResult<object>> PauseAsync()
+		{
+			try
+			{
+				var status = SpotifyAPI.GetStatus();
 
-		public static void Previous() => SpotifyAPI.Previous();
+				if (status.Playing)
+				{
+					await SpotifyAPI.Pause();
+				}
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
 
-		public static void Next(string url) => Play(url);
+			return ActionResult<object>.Success(true);
+		}
 
-		public static float GetVolume() => SpotifyAPI.GetSpotifyVolume();
+		public static IActionResult<object> Previous()
+		{
+			SpotifyAPI.Previous();
 
-		public static void SetVolume(float volume) => SpotifyAPI.SetSpotifyVolume(volume);
+			return ActionResult<object>.Success(true);
+		}
 
-		public static IMusicServiceStatus GetStatus()
+		public static Task<IActionResult<object>> NextAsync(string url) => PlayAsync(url);
+
+		public static IActionResult<float> GetVolume() => ActionResult<float>.Success(SpotifyAPI.GetSpotifyVolume());
+
+		public static IActionResult<float> SetVolume(float volume)
+		{
+			SpotifyAPI.SetSpotifyVolume(volume);
+
+			return GetVolume();
+		}
+
+		public static IActionResult<IMusicServiceStatus> GetStatus()
 		{
 			var result = new MusicServiceStatus();
 
@@ -126,10 +154,10 @@ namespace Musicus.Helpers
 				}
 			}
 
-			return result;
+			return ActionResult<IMusicServiceStatus>.Success(result);
 		}
 
-		public static List<ISearchResult> Search(string keyword)
+		public static IActionResult<IList<ISearchResult>> Search(string keyword)
 		{
 			var result = new List<ISearchResult>();
 
@@ -149,7 +177,7 @@ namespace Musicus.Helpers
 				});
 			}
 
-			return result;
+			return ActionResult<IList<ISearchResult>>.Success(result);
 		}
 
 		private static void CheckRequest(BasicModel response, Action retryMethod)

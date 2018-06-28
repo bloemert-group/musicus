@@ -18,6 +18,10 @@ export function signalRStart(store, callback) {
 		store.dispatch(generalActions.setQueue(data));
 	});
 
+	connection.on('ShowError', message => {
+		store.dispatch(generalActions.showError(message));
+	});
+
 	connection.start();
 
 	//connection.OnDisconnected(function () {

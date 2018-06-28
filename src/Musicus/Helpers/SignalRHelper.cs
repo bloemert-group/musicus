@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Musicus.Abstractions.Models;
@@ -49,20 +48,17 @@ namespace Musicus.Helpers
 		public void SetPlaylist(IList<Track> playlist)
 			=> _hubContext.Clients.All.SendAsync("SetQueue", playlist);
 
-		public void StartStatusUpdate()
+		public void ShowError(string errorMessage)
+			=> _hubContext.Clients.All.SendAsync("ShowError", errorMessage);
+
+		public async Task StartStatusUpdate()
 		{
-			var t = new Thread(async () =>
+			while (true)
 			{
-				while (true)
-				{
-					await StatusUpdateAsync();
+				await StatusUpdateAsync();
 
-					Thread.Sleep(1000);
-					//your infinite loop 
-				}
-			});
-
-			t.Start();
+				await Task.Delay(1000);
+			}
 		}
 
 		public async Task StatusUpdateAsync()

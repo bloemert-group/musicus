@@ -2,6 +2,7 @@ import * as actionTypes from '../constants/ActionTypes.jsx'
 import fetch from 'isomorphic-fetch'
 import * as general from '../constants/General.jsx'
 import $ from 'jquery'
+import { toast } from 'react-toastify'
 
 function setSpotifyFilterAction(active) {
 	return {
@@ -110,9 +111,15 @@ export function addToQueue(trackid, artist, description, trackLength, url, sourc
 		})
 			.then(response => response.json())
 			.then(json => {
-				dispatch(setQueue(json.data));
+				if (json.succeed) {
+					dispatch(setQueue(json.data));
+				}
+				else {
+					toast.error(json.errorMessage);
+				}
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.log(err);
 				console.log('error');
 			});
 	}
@@ -136,6 +143,9 @@ export function play(currentTrack) {
 			.then(response => response.json())
 			.then(json => {
 				console.log(json);
+				if (!json.succeed) {
+					toast.error(json.errorMessage);
+				}
 			})
 			.catch((e) => {
 				console.log(e);
@@ -173,7 +183,9 @@ export function next() {
 		})
 			.then(response => response.json())
 			.then(json => {
-				console.log(json);
+				if (!json.succeed) {
+					toast.error(json.errorMessage);
+				}
 			})
 			.catch(() => {
 				console.log('error');
@@ -191,6 +203,12 @@ export function setTrack(trackInfo) {
 export function setQueue(queue) {
 	return dispatch => {
 		dispatch(setQueueInfo(queue));
+	}
+}
+
+export function showError(errorMessage) {
+	return dispatch => {
+		dispatch(toast.error(errorMessage));
 	}
 }
 

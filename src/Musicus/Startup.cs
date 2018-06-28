@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Musicus.Abstractions.Services;
 using Musicus.Helpers;
-using SpotifyService;
-using YouTubeService;
+using Musicus.SpotifyService;
+using Musicus.YouTubeService;
 
 namespace Musicus
 {
@@ -31,15 +31,7 @@ namespace Musicus
 			services.AddMvc();
 			services.AddSignalR();
 
-			if (Configuration["SpotifyClientId"] != String.Empty && Configuration["SpotifyClientSecret"] != String.Empty)
-			{
-				services.AddTransient<IMusicService>(s => new SpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]));
-			}
-
-			if (Configuration["YouTubeApiKey"] != String.Empty)
-			{
-				services.AddTransient<IMusicService>(s => new YouTubeMusicService(Configuration["YouTubeApiKey"]));
-			}
+			SetMusicServices(services);
 
 			return services.BuildServiceProvider();
 		}
@@ -64,10 +56,19 @@ namespace Musicus
 
 			if (signalRHelper != null)
 			{
-				signalRHelper.StartStatusUpdate();
+				Task.Run(() => signalRHelper.StartStatusUpdate()).ConfigureAwait(false);
+
+				Player.ExceptionHandler = signalRHelper.ShowError;
 			}
 
 			JingleHelper.JingleFilePath = Configuration[nameof(JingleHelper.JingleFilePath)];
+			Player.DefaultMusicServiceVolumeLevel = int.TryParse(Configuration[nameof(Player.DefaultMusicServiceVolumeLevel)], out var volume) ? volume : 30;
+		}
+
+		private void SetMusicServices(IServiceCollection services)
+		{
+			services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
+			services.AddYouTubeMusicService();
 		}
 	}
 }

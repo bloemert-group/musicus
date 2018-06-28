@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
@@ -12,39 +13,56 @@ namespace SpotifyService
 		{
 			SpotifyHelper.ClientId = clientId;
 			SpotifyHelper.ClientSecret = clientSecret;
+
+			SpotifyHelper.SpotifyAPI.OnTrackTimeChange += (obj, args) =>
+			{
+				var status = SpotifyHelper.GetStatus();
+
+				if (status.Data.Length > 0 && (args.TrackTime == 0 || (status.Data.Length - 0.2) <= args.TrackTime))
+				{
+					OnTrackEnd?.Invoke();
+				}
+			};
 		}
 
 		public TrackSource TrackSource => TrackSource.Spotify;
 
-		public async Task<IMusicServiceStatus> GetStatusAsync() => await Task.Run(() => SpotifyHelper.GetStatus());
-
-		public async Task<bool> NextAsync(string url)
+		public Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()
 		{
-			await Task.Run(() => SpotifyHelper.Next(url));
+			var result = SpotifyHelper.GetStatus();
 
-			return true;
+			return Task.FromResult(result);
 		}
 
-		public async Task<bool> PauseAsync()
+		public Task<IActionResult<float>> GetVolumeAsync()
 		{
-			await Task.Run(() => SpotifyHelper.Pause());
+			var result = SpotifyHelper.GetVolume();
 
-			return true;
+			return Task.FromResult(result);
 		}
 
-		public async Task<bool> PlayAsync() => await Task.Run(() => SpotifyHelper.Play());
+		public Task<IActionResult<object>> NextAsync(string url) => SpotifyHelper.NextAsync(url);
 
-		public async Task<bool> PlayAsync(string url) => await Task.Run(() => SpotifyHelper.Play(url));
+		public Task<IActionResult<object>> PauseAsync() => SpotifyHelper.PauseAsync();
 
-		public async Task<IList<ISearchResult>> SearchAsync(string keyword) => await Task.Run(() => SpotifyHelper.Search(keyword));
+		public Task<IActionResult<object>> PlayAsync() => SpotifyHelper.PlayAsync();
 
-		public async Task<bool> SetVolumeAsync(float volume)
+		public Task<IActionResult<object>> PlayAsync(string url) => SpotifyHelper.PlayAsync(url);
+
+		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword)
 		{
-			await Task.Run(() => SpotifyHelper.SetVolume(volume));
+			var result = SpotifyHelper.Search(keyword);
 
-			return true;
+			return Task.FromResult(result);
 		}
 
-		public async Task<float> GetVolumeAsync() => await Task.Run(() => SpotifyHelper.GetVolume());
+		public Task<IActionResult<float>> SetVolumeAsync(float volume)
+		{
+			var result = SpotifyHelper.SetVolume(volume);
+
+			return Task.FromResult(result);
+		}
+
+		public event Action OnTrackEnd;
 	}
 }

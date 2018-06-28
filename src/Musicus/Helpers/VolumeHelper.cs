@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Musicus.Abstractions.Services;
 using Vannatech.CoreAudio.Enumerations;
 using Vannatech.CoreAudio.Interfaces;
 
@@ -7,6 +10,14 @@ namespace Musicus.Helpers
 {
 	public static class VolumeHelper
 	{
+		public static void InitVolume(IEnumerable<IMusicService> musicServices, float defaultMusicServiceVolume)
+		{
+			foreach (var musicService in musicServices)
+			{
+				Task.Run(() => musicService.SetVolumeAsync(defaultMusicServiceVolume));
+			}
+		}
+
 		public static void SetVolume(float newVolume)
 		{
 			IAudioEndpointVolume masterVol = null;

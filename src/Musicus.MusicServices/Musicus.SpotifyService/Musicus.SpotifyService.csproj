@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ExternalLibs\SpotifyAPI-NET\SpotifyAPI.Core\SpotifyAPI.Core.csproj" />
     <ProjectReference Include="..\..\Musicus.Abstractions\Musicus.Abstractions.csproj" />
     <ProjectReference Include="..\..\Musicus.Models\Musicus.Models.csproj" />

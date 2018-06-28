@@ -7,12 +7,10 @@ namespace Musicus
 	public class MusicusHub : Hub
 	{
 		private SignalRHelper _helper;
-		private Player _player;
 
-		public MusicusHub(SignalRHelper helper, Player player)
+		public MusicusHub(SignalRHelper helper)
 		{
 			_helper = helper;
-			_player = player;
 		}
 
 		public override async Task OnConnectedAsync()
