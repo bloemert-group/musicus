@@ -63,6 +63,13 @@ namespace YouTubeService
 			return Task.FromResult(result);
 		}
 
+		public Task<IActionResult<bool>> StopAsync()
+		{
+			var result = YouTubeHelper.Stop();
+
+			return Task.FromResult(result);
+		}
+
 		public event Action OnTrackEnd;
 	}
 }

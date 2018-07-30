@@ -19,9 +19,16 @@ class SearchResult extends React.Component {
 
 	render() {
 
-		var momentLength = moment.duration(this.props.tracklength);
+		var trackLengthFormatted = '';
 
-		var trackLengthFormatted = `${momentLength.minutes()}:${momentLength.seconds().pad()}`;
+		if (this.props.tracklength === -1) {
+			trackLengthFormatted = 'STREAM';
+		}
+		else {
+			var momentLength = moment.duration(this.props.tracklength);
+
+			trackLengthFormatted = `${momentLength.minutes()}:${momentLength.seconds().pad()}`;
+		}
 
 		var playlistTracks = `Tracks: ${this.props.trackcount}`;
 

@@ -25,7 +25,7 @@ namespace Musicus.YouTubeService.Helpers
 				{
 					var libDirectory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
 
-					_vlcPlayer = new Vlc.DotNet.Core.VlcMediaPlayer(libDirectory);
+					_vlcPlayer = new Vlc.DotNet.Core.VlcMediaPlayer(libDirectory, new string[] { "--no-one-instance" });
 				}
 				return _vlcPlayer;
 			}
@@ -138,6 +138,13 @@ namespace Musicus.YouTubeService.Helpers
 			VlcPlayer.Audio.Volume = (int)volume;
 
 			return ActionResult<float>.Success(VlcPlayer.Audio.Volume);
+		}
+
+		public static IActionResult<bool> Stop()
+		{
+			VlcPlayer.Stop();
+
+			return ActionResult<bool>.Success(true);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
-    <PackageReference Include="Vlc.DotNet.Core" Version="2.2.1" />
+    <PackageReference Include="Vlc.DotNet.Core" Version="3.0.0-develop289" />
     <PackageReference Include="YoutubeExplode" Version="4.2.8" />
   </ItemGroup>
 

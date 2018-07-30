@@ -26,13 +26,14 @@ namespace Musicus
 		public IServiceProvider ConfigureServices(IServiceCollection services)
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-			services.AddSingleton<SignalRHelper>();
 			services.AddSingleton<Player>();
 
 			services.AddMvc();
 			services.AddSignalR();
 
 			SetMusicServices(services);
+
+			services.AddSingleton<SignalRHelper>();
 
 			return services.BuildServiceProvider();
 		}
@@ -68,9 +69,9 @@ namespace Musicus
 
 		private void SetMusicServices(IServiceCollection services)
 		{
+			services.AddFileSystemMusicService(Configuration["FileSystemMusicServiceFilePath"]);
 			services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
 			services.AddYouTubeMusicService();
-			services.AddFileSystemMusicService(Configuration["FileSystemMusicServiceFilePath"]);
 		}
 	}
 }

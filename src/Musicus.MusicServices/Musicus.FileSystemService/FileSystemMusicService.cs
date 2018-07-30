@@ -78,5 +78,12 @@ namespace Musicus.FileSystemService
 
 			return Task.FromResult(result);
 		}
+
+		public Task<IActionResult<bool>> StopAsync()
+		{
+			var result = FileSystemHelper.Stop();
+
+			return Task.FromResult(result);
+		}
 	}
 }

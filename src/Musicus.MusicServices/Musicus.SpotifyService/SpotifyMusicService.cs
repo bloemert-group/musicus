@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
-using Musicus.Helpers;
+using Musicus.SpotifyService.Helpers;
 
 namespace SpotifyService
 {
@@ -61,6 +61,11 @@ namespace SpotifyService
 			var result = SpotifyHelper.SetVolume(volume);
 
 			return Task.FromResult(result);
+		}
+
+		public Task<IActionResult<bool>> StopAsync()
+		{
+			return SpotifyHelper.StopAsync();
 		}
 
 		public event Action OnTrackEnd;
