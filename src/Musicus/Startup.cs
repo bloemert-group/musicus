@@ -70,7 +70,7 @@ namespace Musicus
 		private void SetMusicServices(IServiceCollection services)
 		{
 			services.AddFileSystemMusicService(Configuration["FileSystemMusicServiceFilePath"]);
-			services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
+			//services.AddSpotifyMusicService(Configuration["SpotifyClientId"], Configuration["SpotifyClientSecret"]);
 			services.AddYouTubeMusicService();
 		}
 	}
