@@ -11,7 +11,7 @@ namespace Musicus
 {
 	public class Player
 	{
-		public static int DefaultMusicServiceVolumeLevel = 30;
+		public static float DefaultMusicServiceVolumeLevel = 50;
 		// TODO: this should be done differently 
 		// If it works, it ain't stupid
 		public static Action<string> ExceptionHandler;
@@ -74,7 +74,7 @@ namespace Musicus
 
 			if (nextTrack == null) return (false, "No next track in playlist");
 
-			await _musicServices.PauseAll();
+			await _musicServices.StopAll();
 
 			var musicService = _musicServices.GetMusicService(nextTrack.TrackSource);
 
@@ -155,11 +155,11 @@ namespace Musicus
 			return musicService;
 		}
 
-		public static async Task PauseAll(this IEnumerable<IMusicService> musicServices)
+		public static async Task StopAll(this IEnumerable<IMusicService> musicServices)
 		{
-			var pauseTasks = musicServices.Select(ms => ms.PauseAsync());
+			var stopTasks = musicServices.Select(ms => ms.StopAsync());
 
-			await Task.WhenAll(pauseTasks);
+			await Task.WhenAll(stopTasks);
 		}
 	}
 }

@@ -3,73 +3,87 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Musicus.Abstractions.Models;
 using Musicus.Abstractions.Services;
-using Musicus.YouTubeService.Helpers;
+using Musicus.FileSystemService.Helpers;
 
-namespace YouTubeService
+namespace Musicus.FileSystemService
 {
-	public class YouTubeMusicService : IMusicService
+	public class FileSystemMusicService : IMusicService
 	{
-		public YouTubeMusicService()
+		public FileSystemMusicService(string filePath)
 		{
-			YouTubeHelper.VlcPlayer.EndReached += (obj, args) =>
+			FileSystemHelper.FilePath = filePath;
+
+			FileSystemHelper.VlcPlayer.EndReached += (obj, args) =>
 			{
 				OnTrackEnd?.Invoke();
 			};
 		}
 
-		public TrackSource TrackSource => TrackSource.YouTube;
+		public TrackSource TrackSource => TrackSource.FileSystem;
+
+		public event Action OnTrackEnd;
 
 		public Task<IActionResult<IMusicServiceStatus>> GetStatusAsync()
 		{
-			var result = YouTubeHelper.GetStatus();
+			var result = FileSystemHelper.GetStatus();
 
 			return Task.FromResult(result);
 		}
 
 		public Task<IActionResult<float>> GetVolumeAsync()
 		{
-			var result = YouTubeHelper.GetVolume();
+			var result = FileSystemHelper.GetVolume();
 
 			return Task.FromResult(result);
 		}
 
 		public Task<IActionResult<object>> NextAsync(string url)
-			 => YouTubeHelper.PlayAsync(url);
+		{
+			var result = FileSystemHelper.Play(url);
+
+			return Task.FromResult(result);
+		}
 
 		public Task<IActionResult<object>> PauseAsync()
 		{
-			var result = YouTubeHelper.Pause();
+			var result = FileSystemHelper.Pause();
 
 			return Task.FromResult(result);
 		}
 
 		public Task<IActionResult<object>> PlayAsync()
 		{
-			var result = YouTubeHelper.Play();
+			var result = FileSystemHelper.Play();
 
 			return Task.FromResult(result);
 		}
 
 		public Task<IActionResult<object>> PlayAsync(string url)
-			 => YouTubeHelper.PlayAsync(url);
+		{
+			var result = FileSystemHelper.Play(url);
+
+			return Task.FromResult(result);
+		}
 
 		public Task<IActionResult<IList<ISearchResult>>> SearchAsync(string keyword)
-		 => YouTubeHelper.SearchAsync(keyword);
+		{
+			var result = FileSystemHelper.Search(keyword);
+
+			return Task.FromResult(result);
+		}
 
 		public Task<IActionResult<float>> SetVolumeAsync(float volume)
 		{
-			var result = YouTubeHelper.SetVolume(volume);
+			var result = FileSystemHelper.SetVolume(volume);
 
 			return Task.FromResult(result);
 		}
 
 		public Task<IActionResult<bool>> StopAsync()
 		{
-			var result = YouTubeHelper.Stop();
+			var result = FileSystemHelper.Stop();
 
 			return Task.FromResult(result);
 		}
-
-		public event Action OnTrackEnd;
 	}
 }

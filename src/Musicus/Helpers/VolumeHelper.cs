@@ -16,6 +16,8 @@ namespace Musicus.Helpers
 			{
 				Task.Run(() => musicService.SetVolumeAsync(defaultMusicServiceVolume));
 			}
+
+			JingleHelper.InitVolume(defaultMusicServiceVolume);
 		}
 
 		public static void SetVolume(float newVolume)

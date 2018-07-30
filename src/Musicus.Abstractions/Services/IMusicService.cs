@@ -17,6 +17,7 @@ namespace Musicus.Abstractions.Services
 		Task<IActionResult<IMusicServiceStatus>> GetStatusAsync();
 		Task<IActionResult<float>> SetVolumeAsync(float volume);
 		Task<IActionResult<float>> GetVolumeAsync();
+		Task<IActionResult<bool>> StopAsync();
 
 		event Action OnTrackEnd;
 	}

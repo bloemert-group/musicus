@@ -14,7 +14,7 @@ using SpotifyAPI.Web;
 using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
 
-namespace Musicus.Helpers
+namespace Musicus.SpotifyService.Helpers
 {
 	public class SpotifyHelper
 	{
@@ -191,6 +191,13 @@ namespace Musicus.Helpers
 			}
 
 			retryMethod();
+		}
+
+		public static async Task<IActionResult<bool>> StopAsync()
+		{
+			await SpotifyAPI.Pause();
+
+			return ActionResult<bool>.Success(true);
 		}
 	}
 }
