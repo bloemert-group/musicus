@@ -131,13 +131,19 @@ namespace Musicus.YouTubeService.Helpers
 			return ActionResult<IMusicServiceStatus>.Success(_currentStatus);
 		}
 
-		public static IActionResult<float> GetVolume() => ActionResult<float>.Success(VlcPlayer.Audio.Volume);
+		public static IActionResult<float> GetVolume()
+		{
+			var result = (int)(Math.Exp(VlcPlayer.Audio.Volume / 21) + 4.6131);
+
+			return ActionResult<float>.Success((float)result);
+		}
 
 		public static IActionResult<float> SetVolume(float volume)
 		{
-			VlcPlayer.Audio.Volume = (int)volume;
+			var vlcVolume = (int)(21.7 * Math.Log(volume) - 4.6131);       
+			VlcPlayer.Audio.Volume = vlcVolume;
 
-			return ActionResult<float>.Success(VlcPlayer.Audio.Volume);
+			return ActionResult<float>.Success(vlcVolume);
 		}
 
 		public static IActionResult<bool> Stop()

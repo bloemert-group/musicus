@@ -131,9 +131,11 @@ namespace Musicus.ApiControllers
 		public async Task<IActionResult> PlayJingleAsync([FromBody] string filePath)
 		{
 			const int reduceVolumePercentage = 50;
-			var newVolume = Player.DefaultMusicServiceVolumeLevel - ((Player.DefaultMusicServiceVolumeLevel / 100) * reduceVolumePercentage);
-
 			var currentTrack = Playlist.GetCurrentTrack();
+
+			var startingVolume = _player.GetVolumeAsync(currentTrack.TrackSource);
+			var newVolume = startingVolume.Result - ((startingVolume.Result / 100) * reduceVolumePercentage);
+
 			if (currentTrack != null)
 			{
 				_player.SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = newVolume });
@@ -143,7 +145,7 @@ namespace Musicus.ApiControllers
 
 			if (currentTrack != null)
 			{
-				_player.SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = Player.DefaultMusicServiceVolumeLevel });
+				_player.SetVolume(new VolumeFilter { TrackSource = currentTrack.TrackSource, Volume = startingVolume.Result });
 			}
 
 			return Ok();
