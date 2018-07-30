@@ -37,7 +37,7 @@ namespace Musicus.Helpers
 
 		public static void InitVolume(float volume)
 		{
-			//VlcPlayer.Audio.Volume = 200;
+			VlcPlayer.Audio.Volume = 200;
 		}
 
 		public static IEnumerable<Jingle> GetJingles()
